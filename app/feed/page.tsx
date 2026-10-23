@@ -10,17 +10,18 @@ import MaxWidthWrapper from '@/components/global/max-width-wrapper';
 import AnimationContainer from '@/components/global/animation-container';
 import MagicBadge from '@/components/ui/magic-badge';
 import ItemCard from '@/components/site/item-card';
+import { getLang } from '@/lib/lang';
 
 export const dynamic = 'force-dynamic';
 
-const CATS: [string, string][] = [
-  ['exploit', '漏洞'],
-  ['tool-release', '工具发版'],
-  ['signing', '签名'],
-  ['os-release', '系统'],
-  ['wiki', '资料'],
-  ['news', '新闻'],
-  ['scam', '骗局'],
+const CATS: [string, string, string][] = [
+  ['exploit', '漏洞', 'exploits'],
+  ['tool-release', '工具发版', 'tool releases'],
+  ['signing', '签名', 'signing'],
+  ['os-release', '系统', 'system'],
+  ['wiki', '资料', 'wiki'],
+  ['news', '新闻', 'news'],
+  ['scam', '骗局', 'scams'],
 ];
 
 function qs(base: string, params: Record<string, string | undefined>) {
@@ -32,7 +33,7 @@ function qs(base: string, params: Record<string, string | undefined>) {
 
 export default async function Feed({ searchParams }: { searchParams: Promise<Record<string, string | undefined>> }) {
   const sp = await searchParams;
-  const lang = (await cookies()).get('lang')?.value === 'en' ? 'en' : 'zh';
+  const lang = await getLang();
   const items = getVisibleItems();
   const cat = sp.cat || '';
   const src = sp.src || '';
@@ -61,14 +62,14 @@ export default async function Feed({ searchParams }: { searchParams: Promise<Rec
     <MaxWidthWrapper>
       <AnimationContainer>
         <div className="flex flex-col items-start pt-8">
-          <MagicBadge title="全部情报" />
+          <MagicBadge title={t(lang, 'nav.feed')} />
           <h1 className="mt-6 font-heading text-3xl font-medium md:text-5xl">{t(lang, 'page.feed.title')}</h1>
           <p className="mt-3 text-sm text-muted-foreground">
-            共 {items.length} 条（近 5 年），当前筛选 {list.length} 条 · 按发布时间倒序
-            {!showAll && deduped.merged > 0 && ' · 已合并同工具的 ' + deduped.merged + ' 条历史版本'}
+            {t(lang, 'feed.sub', { n: items.length, m: list.length })}
+            {!showAll && deduped.merged > 0 && ' · ' + t(lang, 'feed.merged', { n: deduped.merged })}
             {' · '}
             <Link href={showAll ? '/feed' : '/feed?all=1'} className="text-violet-300/80 hover:text-violet-200">
-              {showAll ? '合并同工具版本' : '展开全部版本'}
+              {showAll ? t(lang, 'feed.collapse') : t(lang, 'feed.showAll')}
             </Link>
           </p>
         </div>
@@ -91,11 +92,11 @@ export default async function Feed({ searchParams }: { searchParams: Promise<Rec
 
           <div className="flex flex-wrap items-center gap-2">
             <Link href={qs('/feed', { cat, src, only })} className={pill(!cat && only !== 'actionable')}>
-              全部
+              {t(lang, 'common.all')}
             </Link>
-            {CATS.map(([key, label]) => (
+            {CATS.map(([key, zh, en]) => (
               <Link key={key} href={qs('/feed', { cat: key, src, only, q: sp.q })} className={pill(cat === key)}>
-                {label}
+                {lang === 'en' ? en : zh}
               </Link>
             ))}
             <span className="mx-1 h-4 w-px bg-border" />
@@ -119,7 +120,7 @@ export default async function Feed({ searchParams }: { searchParams: Promise<Rec
 
       <div className="mt-8 space-y-3">
         {list.map((it) => (
-          <ItemCard key={it.id} it={it} />
+          <ItemCard key={it.id} it={it} lang={lang} />
         ))}
         {!list.length && (
           <div className="rounded-xl border border-dashed border-border bg-card/30 p-8 text-center text-sm text-neutral-500">

@@ -82,6 +82,16 @@ export function saveDeviceSnapshot(snap: import('./types').DeviceSnapshot) {
   fs.writeFileSync(path.join(DATA_DIR, 'device.json'), JSON.stringify(snap, null, 2));
 }
 
+export function saveDigestEn(date: string, markdown: string) {
+  ensure();
+  fs.writeFileSync(path.join(DIGEST_DIR, date + '.en.md'), markdown);
+}
+
+export function getDigestEn(date: string): string | null {
+  const p = path.join(DIGEST_DIR, date + '.en.md');
+  return fs.existsSync(p) ? fs.readFileSync(p, 'utf8') : null;
+}
+
 export function saveDigest(date: string, markdown: string) {
   ensure();
   fs.writeFileSync(path.join(DIGEST_DIR, date + '.md'), markdown);

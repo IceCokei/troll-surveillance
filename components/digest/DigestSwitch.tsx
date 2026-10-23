@@ -4,6 +4,7 @@ import { Terminal, LayoutList } from 'lucide-react';
 import { cn } from '@/lib/cn';
 import DigestView from './DigestView';
 import TerminalFrame from './TerminalFrame';
+import { t, type Lang } from '@/lib/i18n';
 
 type View = 'terminal' | 'reading';
 
@@ -12,11 +13,13 @@ export default function DigestSwitch({
   date,
   device,
   initial = 'terminal',
+  lang = 'zh',
 }: {
   markdown: string;
   date: string;
   device: string;
   initial?: View;
+  lang?: Lang;
 }) {
   const [view, setView] = useState<View>(initial);
 
@@ -31,10 +34,10 @@ export default function DigestSwitch({
       <div className="mb-3 flex items-center justify-between gap-3">
         <div className="flex items-center gap-1 rounded-lg border border-border bg-card/40 p-1">
           <button onClick={() => setView('terminal')} className={btn(view === 'terminal')}>
-            <Terminal className="size-3.5" /> 终端
+            <Terminal className="size-3.5" /> {t(lang, 'digest.terminal')}
           </button>
           <button onClick={() => setView('reading')} className={btn(view === 'reading')}>
-            <LayoutList className="size-3.5" /> 阅读
+            <LayoutList className="size-3.5" /> {t(lang, 'digest.reading')}
           </button>
         </div>
         <span className="font-mono text-[10.5px] text-neutral-700">

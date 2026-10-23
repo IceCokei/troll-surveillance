@@ -9,8 +9,9 @@ import { collectFeed } from './collect/rss';
 import { fetchWikiPage, wikiItem } from './collect/wiki';
 import { collectX } from './collect/x';
 import { GITHUB_REPOS, RSS_FEEDS, WIKI_PAGES, X_HANDLES } from './knowledge';
-import { getItems, getMeta, getProfile, saveDigest, saveItems, saveMeta, today } from './store';
+import { getItems, getMeta, getProfile, saveDigest, saveDigestEn, saveItems, saveMeta, today } from './store';
 import { buildDigest } from './digest';
+import { buildDigestEn } from './digest-en';
 import type { Item, Meta, RawItem } from './types';
 
 export interface SyncResult {
@@ -208,6 +209,7 @@ export async function runSync(opts: { force?: boolean } = {}): Promise<SyncResul
   const d = today();
   const markdown = buildDigest(d, all, profile, meta);
   saveDigest(d, markdown);
+  saveDigestEn(d, buildDigestEn(d, all, profile, meta));
 
   return {
     startedAt,

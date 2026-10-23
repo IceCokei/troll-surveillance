@@ -5,13 +5,15 @@ import { Badge } from '@/components/ui/badge';
 import { getMeta } from '@/lib/store';
 import { cookies } from 'next/headers';
 import { t } from '@/lib/i18n';
+import { enNote, stateTitleEn, roleEn, roleTextEn } from '@/lib/en';
 import { getVisibleItems } from '@/lib/items';
 import { byTimeDesc } from '@/lib/fresh';
+import { getLang } from '@/lib/lang';
 
 export const dynamic = 'force-dynamic';
 
 export default async function Authors() {
-  const lang = (await cookies()).get('lang')?.value === 'en' ? 'en' : 'zh';
+  const lang = await getLang();
   const items = getVisibleItems();
   const meta = getMeta();
   const map = new Map<string, { count: number; best: number; last: string; items: typeof items }>();
@@ -60,14 +62,14 @@ export default async function Authors() {
               <Badge variant={v.best >= 70 ? 'acc' : 'ghost'}>{t(lang, 'authors.best', { n: v.best })}</Badge>
               <Badge variant="ghost">{t(lang, 'authors.count', { n: v.count })}</Badge>
             </div>
-            <div className="mt-1 text-[11px] text-neutral-600">最近 {v.last.slice(0, 16).replace('T', ' ')}</div>
+            <div className="mt-1 text-[11px] text-neutral-600">{lang === 'en' ? 'latest' : '最近'} {v.last.slice(0, 16).replace('T', ' ')}</div>
             <div className="mt-4 space-y-3">
               {v.items.sort(byTimeDesc).slice(0, 3).map((it) => (
                 <div key={it.id}>
                   <a href={it.url} target="_blank" rel="noreferrer" className="text-[13px] leading-snug text-neutral-300 transition-colors hover:text-violet-300">
-                    {it.title.slice(0, 120)}
+                    {lang === 'en' ? stateTitleEn(it.title).slice(0, 120) : it.title.slice(0, 120)}
                   </a>
-                  <div className="mt-1 text-[11px] text-neutral-600">[{it.score}] {it.actionNote}</div>
+                  <div className="mt-1 text-[11px] text-neutral-600">[{it.score}] {lang === 'en' ? enNote(it.actionNote) : it.actionNote}</div>
                 </div>
               ))}
             </div>

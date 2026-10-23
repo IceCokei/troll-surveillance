@@ -11,6 +11,8 @@ import { listDevices, maskDevice, TROLLSTORE_MAX } from '@/lib/devices';
 import { TS_TOOLS, toolVerdict } from '@/lib/trollstore';
 import { EXPLOITS, exploitApplies } from '@/lib/exploits';
 import { t } from '@/lib/i18n';
+import { stateTitleEn, enNote } from '@/lib/en';
+import { getLang } from '@/lib/lang';
 
 export const dynamic = 'force-dynamic';
 
@@ -25,7 +27,7 @@ const KIND_EN: Record<string, string> = {
 export default async function DevicesPage({ searchParams }: { searchParams: Promise<Record<string, string | undefined>> }) {
   const sp = await searchParams;
   const redact = sp.redact === '1';
-  const lang = (await cookies()).get('lang')?.value === 'en' ? 'en' : 'zh';
+  const lang = await getLang();
   const [rawDevices, rawItems] = await Promise.all([listDevices(), Promise.resolve(getItems())]);
   const devices = redact ? rawDevices.map(maskDevice) : rawDevices;
   const items = rawItems.filter((i) => withinYears(i.publishedAt)).sort(byTimeDesc);
@@ -136,7 +138,7 @@ export default async function DevicesPage({ searchParams }: { searchParams: Prom
                   <td className="px-4 py-3 text-[11.5px] text-neutral-500">{lang === 'en' ? KIND_EN[tool.kind] || tool.kind : tool.kind}</td>
                   <td className="px-4 py-3 font-mono text-[11px] text-neutral-500">
                     {latest ? latest.publishedAt.slice(0, 10) : t(lang, 'devices.noneHit')}
-                    {latest && <div className="mt-0.5 max-w-[220px] truncate text-[10.5px] text-neutral-700">{latest.title}</div>}
+                    {latest && <div className="mt-0.5 max-w-[220px] truncate text-[10.5px] text-neutral-700">{lang === 'en' ? stateTitleEn(latest.title) : latest.title}</div>}
                   </td>
                   <td className="px-4 py-3 text-[11.5px] text-neutral-500">
                     {tool.needsTrollStore ? t(lang, 'devices.needTs') : t(lang, 'devices.noNeedTs')}
@@ -225,9 +227,9 @@ export default async function DevicesPage({ searchParams }: { searchParams: Prom
                     )}
                   </div>
                   <a href={i.url} target="_blank" rel="noreferrer" className="mt-1.5 block text-[13px] text-neutral-200 hover:text-violet-300">
-                    {i.title.slice(0, 140)}
+                    {lang === 'en' ? stateTitleEn(i.title).slice(0, 140) : i.title.slice(0, 140)}
                   </a>
-                  <div className="mt-1 text-[11.5px] text-neutral-600">{i.actionNote}</div>
+                  <div className="mt-1 text-[11.5px] text-neutral-600">{lang === 'en' ? enNote(i.actionNote) : i.actionNote}</div>
                 </div>
               ))}
               {!hits.length && (
@@ -248,7 +250,7 @@ export default async function DevicesPage({ searchParams }: { searchParams: Prom
             <MagicBadge title={t(lang, 'devices.tsNews')} />
             <h2 className="mt-4 font-heading text-xl font-medium md:text-2xl">{t(lang, 'devices.tsNewsTitle')}</h2>
           </div>
-          <Link href="/feed?q=trollstore" className="text-[12px] text-neutral-500 hover:text-foreground">全部 →</Link>
+          <Link href="/feed?q=trollstore" className="text-[12px] text-neutral-500 hover:text-foreground">{lang === 'en' ? 'all' : '全部'} →</Link>
         </div>
 
         <div className="mt-4 space-y-2">
@@ -261,9 +263,9 @@ export default async function DevicesPage({ searchParams }: { searchParams: Prom
                 {i.actionable && <Badge variant="ok">可执行</Badge>}
               </div>
               <a href={i.url} target="_blank" rel="noreferrer" className="mt-1.5 block text-[13px] text-neutral-200 hover:text-violet-300">
-                {i.title.slice(0, 140)}
+                {lang === 'en' ? stateTitleEn(i.title).slice(0, 140) : i.title.slice(0, 140)}
               </a>
-              <div className="mt-1 text-[11.5px] text-neutral-600">{i.actionNote}</div>
+              <div className="mt-1 text-[11.5px] text-neutral-600">{lang === 'en' ? enNote(i.actionNote) : i.actionNote}</div>
             </div>
           ))}
           {!trollstoreNews.length && (

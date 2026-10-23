@@ -191,7 +191,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<Rec
         </AnimationContainer>
 
         <div className="mt-6 space-y-3">
-          {actionable.slice(0, 5).map((it) => <ItemCard key={it.id} it={it} compact />)}
+          {actionable.slice(0, 5).map((it) => <ItemCard key={it.id} it={it} compact lang={lang} />)}
           {!actionable.length && (
             <div className="rounded-xl border border-dashed border-border bg-card/30 p-6 text-sm text-neutral-500">
               {t(lang, 'home.act.empty')}
@@ -215,7 +215,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<Rec
         </AnimationContainer>
 
         <div className="mt-6 space-y-3">
-          {thisYearItems.slice(0, 12).map((it) => <ItemCard key={it.id} it={it} />)}
+          {thisYearItems.slice(0, 12).map((it) => <ItemCard key={it.id} it={it} lang={lang} />)}
           {!thisYearItems.length && (
             <div className="rounded-xl border border-border bg-card/40 p-8 text-center text-sm text-neutral-500">
               {t(lang, 'home.feed.empty')}
@@ -229,7 +229,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<Rec
               {t(lang, 'home.older', { a: new Date().getFullYear() - 4, b: new Date().getFullYear() - 1, n: olderItems.length })}
             </summary>
             <div className="mt-3 space-y-3">
-              {olderItems.slice(0, 20).map((it) => <ItemCard key={it.id} it={it} compact />)}
+              {olderItems.slice(0, 20).map((it) => <ItemCard key={it.id} it={it} compact lang={lang} />)}
             </div>
           </details>
         )}

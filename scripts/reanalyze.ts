@@ -1,6 +1,7 @@
 import { analyze, itemId } from '../lib/analyze';
 import { buildDigest } from '../lib/digest';
-import { getItems, getMeta, getProfile, saveDigest, saveItems, today } from '../lib/store';
+import { buildDigestEn } from '../lib/digest-en';
+import { getItems, getMeta, getProfile, saveDigest, saveDigestEn, saveItems, today } from '../lib/store';
 import type { RawItem } from '../lib/types';
 
 const profile = getProfile();
@@ -50,6 +51,7 @@ saveItems(finalItems);
 const meta = getMeta();
 const md = buildDigest(today(), finalItems, profile, meta);
 saveDigest(today(), md);
+saveDigestEn(today(), buildDigestEn(today(), finalItems ?? next ?? [], profile, getMeta()));
 
 const actionable = finalItems.filter((i) => i.actionable);
 console.log('reanalyzed=' + finalItems.length + ' changed=' + changed + ' actionable=' + actionable.length);

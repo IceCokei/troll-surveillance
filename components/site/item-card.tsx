@@ -1,6 +1,7 @@
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/cn';
 import type { Item } from '@/lib/types';
+import { enNote, CAT_EN, agoEn, stateTitleEn } from '@/lib/en';
 
 const CAT: Record<string, { label: string; variant: 'ok' | 'warn' | 'bad' | 'acc' | 'ghost' }> = {
   exploit: { label: '漏洞', variant: 'bad' },
@@ -21,8 +22,12 @@ function ago(iso: string) {
   return Math.floor(h / 24) + ' 天前';
 }
 
-export default function ItemCard({ it, compact = false }: { it: Item; compact?: boolean }) {
+export default function ItemCard({ it, compact = false, lang = 'zh' }: { it: Item; compact?: boolean; lang?: 'zh' | 'en' }) {
   const cat = CAT[it.category] || CAT.news;
+  const catLabel = lang === 'en' ? CAT_EN[it.category] || 'news' : cat.label;
+  const note = lang === 'en' ? enNote(it.actionNote) : it.actionNote;
+  const time = lang === 'en' ? agoEn(it.publishedAt) : ago(it.publishedAt);
+  const title = lang === 'en' ? stateTitleEn(it.title) : it.title;
   return (
     <div
       className={cn(
@@ -44,23 +49,23 @@ export default function ItemCard({ it, compact = false }: { it: Item; compact?: 
 
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-2">
-          <Badge variant={cat.variant}>{cat.label}</Badge>
-          {it.actionable && <Badge variant="ok">可执行</Badge>}
-          {it.deviceRelevance === 'direct' && <Badge variant="acc">版本命中</Badge>}
-          {it.deviceRelevance === 'future' && <Badge variant="warn">需更高版本</Badge>}
-          {it.deviceRelevance === 'obsolete' && <Badge variant="ghost">已过时</Badge>}
+          <Badge variant={cat.variant}>{catLabel}</Badge>
+          {it.actionable && <Badge variant="ok">{lang === 'en' ? 'actionable' : '可执行'}</Badge>}
+          {it.deviceRelevance === 'direct' && <Badge variant="acc">{lang === 'en' ? 'build matches' : '版本命中'}</Badge>}
+          {it.deviceRelevance === 'future' && <Badge variant="warn">{lang === 'en' ? 'needs newer build' : '需更高版本'}</Badge>}
+          {it.deviceRelevance === 'obsolete' && <Badge variant="ghost">{lang === 'en' ? 'obsolete' : '已过时'}</Badge>}
           <span className="text-xs text-neutral-500">{it.source}</span>
-          <span className="text-xs text-neutral-600">{ago(it.publishedAt)}</span>
+          <span className="text-xs text-neutral-600">{time}</span>
         </div>
 
         <h4 className="mt-2.5 text-[15px] font-medium leading-snug">
           <a href={it.url} target="_blank" rel="noreferrer" className="transition-colors hover:text-violet-300">
-            {it.title}
+            {title}
           </a>
         </h4>
 
         <p className={cn('mt-2 border-l-2 pl-3 text-[12.5px] leading-relaxed', it.actionable ? 'border-emerald-500/40 text-emerald-200/80' : 'border-neutral-800 text-neutral-400')}>
-          {it.actionNote}
+          {note}
         </p>
 
         {!compact && it.text && (

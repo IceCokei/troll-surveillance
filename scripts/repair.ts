@@ -1,7 +1,8 @@
 import { analyze } from '../lib/analyze';
 import { buildDigest } from '../lib/digest';
+import { buildDigestEn } from '../lib/digest-en';
 import { cleanPostText } from '../lib/collect/xposts';
-import { getItems, getMeta, getProfile, saveDigest, saveItems, today } from '../lib/store';
+import { getItems, getMeta, getProfile, saveDigest, saveDigestEn, saveItems, today } from '../lib/store';
 import type { RawItem } from '../lib/types';
 
 const profile = getProfile();

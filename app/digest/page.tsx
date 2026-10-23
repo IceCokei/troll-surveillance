@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { FileText, ArrowUpRight } from 'lucide-react';
 import fs from 'node:fs';
 import path from 'node:path';
-import { getDigest, listDigests, today, getMeta, getProfile } from '@/lib/store';
+import { getDigest, getDigestEn, listDigests, today, getMeta, getProfile } from '@/lib/store';
 import { cn } from '@/lib/cn';
 import MaxWidthWrapper from '@/components/global/max-width-wrapper';
 import AnimationContainer from '@/components/global/animation-container';
@@ -11,18 +11,19 @@ import DigestSwitch from '@/components/digest/DigestSwitch';
 import { toCN } from '@/lib/date';
 import { cookies } from 'next/headers';
 import { t } from '@/lib/i18n';
+import { getLang } from '@/lib/lang';
 
 export const dynamic = 'force-dynamic';
 
 export default async function DigestPage({ searchParams }: { searchParams: Promise<Record<string, string | undefined>> }) {
   const sp = await searchParams;
+  const lang = await getLang();
   const dates = listDigests();
   const date = sp.date || dates[0] || today();
-  const md = getDigest(date);
+  const md = lang === 'en' ? (getDigestEn(date) ?? getDigest(date)) : getDigest(date);
   const profile = getProfile();
   const meta = getMeta();
   const initial = sp.view === 'reading' ? 'reading' : 'terminal';
-  const lang = (await cookies()).get('lang')?.value === 'en' ? 'en' : 'zh';
 
   let watch: { intervalMs?: number; lastRunAt?: string; nextRunAt?: string; runs?: number } | null = null;
   try {
@@ -39,12 +40,12 @@ export default async function DigestPage({ searchParams }: { searchParams: Promi
           <h1 className="mt-6 font-heading text-3xl font-medium md:text-5xl">{date}</h1>
           <p className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted-foreground">
             <span>
-              同步于 {meta.lastSyncAt ? toCN(meta.lastSyncAt) : '尚未同步'}
-              <span className="ml-1 text-neutral-600">（北京时间）</span>
+              {lang === 'en' ? 'synced ' : '同步于 '}{meta.lastSyncAt ? toCN(meta.lastSyncAt) : (lang === 'en' ? 'never' : '尚未同步')}
+              <span className="ml-1 text-neutral-600">{lang === 'en' ? '(UTC+8)' : '（北京时间）'}</span>
             </span>
             {watch?.intervalMs && (
               <span className="text-neutral-600">
-                · 每 {Math.round(watch.intervalMs / 1000)} 秒自动同步
+                · {lang === 'en' ? 'auto-sync every ' + Math.round(watch.intervalMs / 1000) + 's' : '每 ' + Math.round(watch.intervalMs / 1000) + ' 秒自动同步'}
                 {watch.nextRunAt ? '，下次 ' + toCN(watch.nextRunAt, false) : ''}
               </span>
             )}
@@ -73,7 +74,7 @@ export default async function DigestPage({ searchParams }: { searchParams: Promi
       <AnimationContainer delay={0.05}>
         <div className="mt-6">
           {md ? (
-            <DigestSwitch markdown={md} date={date} device={profile.identifier} initial={initial} />
+            <DigestSwitch markdown={md} date={date} device={profile.identifier} initial={initial} lang={lang} />
           ) : (
             <div className="rounded-2xl border border-dashed border-border bg-card/30 p-10 text-center text-sm text-neutral-500">
               该日期没有简报。
@@ -84,10 +85,10 @@ export default async function DigestPage({ searchParams }: { searchParams: Promi
 
       <div className="mt-4 flex flex-wrap items-center gap-4 text-[11.5px] text-neutral-600">
         <a href={'/api/digest?date=' + date} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 hover:text-neutral-300">
-          <FileText className="size-3" /> 原始 Markdown（归档用）
+          <FileText className="size-3" /> {t(lang, 'digest.raw')}
         </a>
         <a href={'/digest?date=' + date + '&view=reading'} className="inline-flex items-center gap-1 hover:text-neutral-300">
-          <ArrowUpRight className="size-3" /> 切到阅读版
+          <ArrowUpRight className="size-3" /> {t(lang, 'digest.readingLink')}
         </a>
         <span className="font-mono">data/digests/{date}.md</span>
       </div>

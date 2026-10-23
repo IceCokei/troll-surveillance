@@ -8,11 +8,12 @@ import { getMeta, getProfile } from '@/lib/store';
 import { toolSupports } from '@/lib/analyze';
 import { cookies } from 'next/headers';
 import { t as tr } from '@/lib/i18n';
+import { getLang } from '@/lib/lang';
 
 export const dynamic = 'force-dynamic';
 
 export default async function Tools() {
-  const lang = (await cookies()).get('lang')?.value === 'en' ? 'en' : 'zh';
+  const lang = await getLang();
   const profile = getProfile();
   const meta = getMeta();
 
@@ -70,7 +71,7 @@ export default async function Tools() {
                   </td>
                   <td className="whitespace-nowrap px-5 py-4 text-[11.5px] text-neutral-500">
                     {t.kind}
-                    {!t.public && ' · 未发布'}
+                    {!t.public && (lang === 'en' ? ' · unreleased' : ' · 未发布')}
                   </td>
                   <td className="px-5 py-4 font-mono text-[11.5px] text-neutral-400">
                     {t.minVersion ? t.minVersion + ' – ' : '≤ '}
