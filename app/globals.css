@@ -98,3 +98,49 @@
     -webkit-mask-image: linear-gradient(to bottom, #000 60%, transparent 100%);
   }
 }
+
+/* ---------- light theme ---------- */
+.light {
+  --background: 0 0% 100%;
+  --foreground: 0 0% 6%;
+  --card: 0 0% 100%;
+  --card-foreground: 0 0% 6%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 0 0% 6%;
+  --primary: 0 0% 9%;
+  --primary-foreground: 0 0% 98%;
+  --secondary: 0 0% 96%;
+  --secondary-foreground: 0 0% 9%;
+  --muted: 0 0% 96%;
+  --muted-foreground: 0 0% 42%;
+  --accent: 0 0% 96%;
+  --accent-foreground: 0 0% 9%;
+  --border: 0 0% 88%;
+  --input: 0 0% 88%;
+  --ring: 0 0% 40%;
+}
+
+.light .grid-bg {
+  background-image: linear-gradient(to right, #e6e8ec 1px, transparent 1px),
+    linear-gradient(to bottom, #e6e8ec 1px, transparent 1px);
+}
+.light .noise { opacity: 0.02; }
+
+/* neutral utility remaps (the skin uses a lot of neutral-*) */
+.light .text-neutral-200, .light .text-neutral-300 { color: #111827; }
+.light .text-neutral-400 { color: #374151; }
+.light .text-neutral-500 { color: #4b5563; }
+.light .text-neutral-600 { color: #6b7280; }
+.light .text-neutral-700 { color: #9ca3af; }
+.light .text-white { color: #0b0b0f; }
+
+.light .bg-neutral-900, .light .bg-neutral-900\/60, .light .bg-neutral-900\/40 { background-color: rgba(0,0,0,0.04); }
+.light .bg-neutral-950\/30, .light .bg-neutral-950\/40, .light .bg-neutral-950\/60, .light .bg-neutral-950\/80 { background-color: rgba(0,0,0,0.03); }
+.light .bg-\[\#08080a\]\/90, .light .bg-\[\#08080a\]\/80 { background-color: rgba(255,255,255,0.92); }
+.light .bg-card\/30, .light .bg-card\/40, .light .bg-card\/50, .light .bg-card\/60 { background-color: rgba(255,255,255,0.75); }
+
+.light .border-neutral-700, .light .border-neutral-800, .light .border-neutral-800\/70, .light .border-neutral-800\/60 { border-color: rgba(0,0,0,0.10); }
+
+.light header.top { background: rgba(255,255,255,0.75); }
+.light .shadow-\[0_24px_80px_-32px_rgba\(0\,0\,0\,0\.9\)\] { box-shadow: 0 24px 80px -32px rgba(0,0,0,0.25); }
+

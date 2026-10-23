@@ -8,18 +8,10 @@ import MaxWidthWrapper from '@/components/global/max-width-wrapper';
 import AnimationContainer from '@/components/global/animation-container';
 import { buttonVariants } from '@/components/ui/button';
 import SyncButton from '@/components/SyncButton';
+import Controls from '@/components/site/Controls';
+import { t, type Lang } from '@/lib/i18n';
 
-const NAV = [
-  { href: '/', label: '今日雷达' },
-  { href: '/feed', label: '全部情报' },
-  { href: '/devices', label: '设备' },
-  { href: '/sources', label: '作者总表' },
-  { href: '/authors', label: '动态聚合' },
-  { href: '/tools', label: '工具矩阵' },
-  { href: '/digest', label: '每日简报' },
-];
-
-export default function Navbar() {
+export default function Navbar({ lang, theme }: { lang: Lang; theme: 'dark' | 'light' }) {
   const [scroll, setScroll] = useState(false);
   const pathname = usePathname();
 
@@ -29,6 +21,15 @@ export default function Navbar() {
     window.addEventListener('scroll', onScroll);
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
+
+  const NAV = [
+    { href: '/', label: t(lang, 'nav.home') },
+    { href: '/feed', label: t(lang, 'nav.feed') },
+    { href: '/devices', label: t(lang, 'nav.devices') },
+    { href: '/sources', label: t(lang, 'nav.sources') },
+    { href: '/tools', label: t(lang, 'nav.tools') },
+    { href: '/digest', label: t(lang, 'nav.digest') },
+  ];
 
   return (
     <header
@@ -45,7 +46,7 @@ export default function Navbar() {
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
                 <span className="relative inline-flex size-2 rounded-full bg-emerald-400" />
               </span>
-              <span className="text-lg font-bold font-heading !leading-none tracking-tight">越狱雷达</span>
+              <span className="text-lg font-bold font-heading !leading-none tracking-tight">Troll Surveillance</span>
             </Link>
 
             <nav className="hidden lg:flex items-center gap-1">
@@ -68,11 +69,16 @@ export default function Navbar() {
           </div>
 
           <div className="hidden lg:flex items-center gap-3">
-            <SyncButton variant="ghost" label="同步" />
+            <Controls lang={lang} theme={theme} />
+            <SyncButton variant="ghost" label={t(lang, 'common.sync')} />
             <Link href="/digest" className={cn(buttonVariants({ size: 'sm' }), 'gap-1.5')}>
-              今日简报
+              {t(lang, 'nav.digest')}
               <Zap className="size-3.5 text-orange-500 fill-orange-500" />
             </Link>
+          </div>
+
+          <div className="lg:hidden">
+            <Controls lang={lang} theme={theme} />
           </div>
         </MaxWidthWrapper>
       </AnimationContainer>

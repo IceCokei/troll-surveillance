@@ -3,6 +3,8 @@ import { Search } from 'lucide-react';
 import { getVisibleItems } from '@/lib/items';
 import { byStateThenTime } from '@/lib/fresh';
 import { dedupeByTool } from '@/lib/dedupe';
+import { cookies } from 'next/headers';
+import { t } from '@/lib/i18n';
 import { cn } from '@/lib/cn';
 import MaxWidthWrapper from '@/components/global/max-width-wrapper';
 import AnimationContainer from '@/components/global/animation-container';
@@ -30,6 +32,7 @@ function qs(base: string, params: Record<string, string | undefined>) {
 
 export default async function Feed({ searchParams }: { searchParams: Promise<Record<string, string | undefined>> }) {
   const sp = await searchParams;
+  const lang = (await cookies()).get('lang')?.value === 'en' ? 'en' : 'zh';
   const items = getVisibleItems();
   const cat = sp.cat || '';
   const src = sp.src || '';
@@ -59,7 +62,7 @@ export default async function Feed({ searchParams }: { searchParams: Promise<Rec
       <AnimationContainer>
         <div className="flex flex-col items-start pt-8">
           <MagicBadge title="全部情报" />
-          <h1 className="mt-6 font-heading text-3xl font-medium md:text-5xl">情报检索</h1>
+          <h1 className="mt-6 font-heading text-3xl font-medium md:text-5xl">{t(lang, 'page.feed.title')}</h1>
           <p className="mt-3 text-sm text-muted-foreground">
             共 {items.length} 条（近 5 年），当前筛选 {list.length} 条 · 按发布时间倒序
             {!showAll && deduped.merged > 0 && ' · 已合并同工具的 ' + deduped.merged + ' 条历史版本'}

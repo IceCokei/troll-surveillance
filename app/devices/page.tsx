@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { cookies } from 'next/headers';
 import MaxWidthWrapper from '@/components/global/max-width-wrapper';
 import AnimationContainer from '@/components/global/animation-container';
 import MagicBadge from '@/components/ui/magic-badge';
@@ -8,12 +9,14 @@ import { getItems } from '@/lib/store';
 import { byTimeDesc, withinYears } from '@/lib/fresh';
 import { listDevices, maskDevice, TROLLSTORE_MAX } from '@/lib/devices';
 import { TS_TOOLS, toolVerdict } from '@/lib/trollstore';
+import { t } from '@/lib/i18n';
 
 export const dynamic = 'force-dynamic';
 
 export default async function DevicesPage({ searchParams }: { searchParams: Promise<Record<string, string | undefined>> }) {
   const sp = await searchParams;
   const redact = sp.redact === '1';
+  const lang = (await cookies()).get('lang')?.value === 'en' ? 'en' : 'zh';
   const [rawDevices, rawItems] = await Promise.all([listDevices(), Promise.resolve(getItems())]);
   const devices = redact ? rawDevices.map(maskDevice) : rawDevices;
   const items = rawItems.filter((i) => withinYears(i.publishedAt)).sort(byTimeDesc);
@@ -50,7 +53,7 @@ export default async function DevicesPage({ searchParams }: { searchParams: Prom
       <AnimationContainer>
         <div className="flex flex-col items-start pt-8">
           <MagicBadge title="设备与 TrollStore" />
-          <h1 className="mt-6 font-heading text-3xl font-medium md:text-5xl">只看它自己的版本</h1>
+          <h1 className="mt-6 font-heading text-3xl font-medium md:text-5xl">{t(lang, 'page.devices.title')}</h1>
           <p className="mt-3 max-w-2xl text-sm text-muted-foreground">
             每 5 秒通过 usbmuxd 轮询：连接/断开、机型、系统、越狱与 TrollStore 的判定实时更新。
             判定只针对设备当前这个系统版本，不看别的版本能不能刷。

@@ -1,10 +1,12 @@
 import Link from 'next/link';
+import { cookies } from 'next/headers';
 import { ArrowRight, Fingerprint, ShieldCheck, Smartphone, Tablet, Terminal } from 'lucide-react';
 import { getMeta, getProfile, today } from '@/lib/store';
 import { getVisibleItems } from '@/lib/items';
 import { byStateThenTime, isThisYear, withinYears } from '@/lib/fresh';
 import { dedupeByTool } from '@/lib/dedupe';
 import { localDate } from '@/lib/date';
+import { t } from '@/lib/i18n';
 import { TOOLS } from '@/lib/knowledge';
 import { toolSupports } from '@/lib/analyze';
 import { listDevices, maskDevice } from '@/lib/devices';
@@ -22,6 +24,8 @@ export const dynamic = 'force-dynamic';
 export default async function Home({ searchParams }: { searchParams: Promise<Record<string, string | undefined>> }) {
   const sp = await searchParams;
   const redact = sp.redact === '1';
+  const jar = await cookies();
+  const lang = jar.get('lang')?.value === 'en' ? 'en' : 'zh';
   const profile = getProfile();
   const meta = getMeta();
   const items = getVisibleItems();
@@ -39,10 +43,10 @@ export default async function Home({ searchParams }: { searchParams: Promise<Rec
   const usableForProfile = TOOLS.filter((t) => toolSupports(t, profile) && t.kind !== 'sideload');
 
   const stats = [
-    { label: '今日入库', value: dayItems.length, hint: '条情报（含往年重抓）' },
-    { label: '可执行', value: actionable.length, hint: '条动作', accent: actionable.length > 0 },
-    { label: '漏洞情报', value: exploits.length, hint: '条链路相关' },
-    { label: '采集失败', value: badSources.length, hint: '个数据源', warn: badSources.length > 0 },
+    { label: t(lang, 'home.stat.today'), value: dayItems.length, hint: t(lang, 'home.stat.todayHint') },
+    { label: t(lang, 'home.stat.act'), value: actionable.length, hint: t(lang, 'home.stat.actHint'), accent: actionable.length > 0 },
+    { label: t(lang, 'home.stat.exp'), value: exploits.length, hint: t(lang, 'home.stat.expHint') },
+    { label: t(lang, 'home.stat.fail'), value: badSources.length, hint: t(lang, 'home.stat.failHint'), warn: badSources.length > 0 },
   ];
 
   return (
@@ -50,24 +54,24 @@ export default async function Home({ searchParams }: { searchParams: Promise<Rec
       <MaxWidthWrapper>
         <div className="flex w-full flex-col items-center justify-center bg-gradient-to-t from-background pb-6 pt-10 text-center md:pt-16">
           <AnimationContainer className="flex w-full flex-col items-center justify-center text-center">
-            <MagicBadge title={devices.length ? devices.length + ' 台设备已连接' : 'iOS / iPadOS 越狱情报'} />
+            <MagicBadge title={devices.length ? t(lang, 'home.badgeDevices', { n: devices.length }) : t(lang, 'home.badgeIntel')} />
 
             <h1 className="w-full py-6 font-heading text-4xl font-medium leading-[1.12] tracking-tight text-balance sm:text-5xl md:text-6xl lg:text-7xl">
-              越狱情报，
-              <span className="text-gradient">精准到你的设备</span>
+              {t(lang, 'home.titleA')}
+              <span className="text-gradient">{t(lang, 'home.titleB')}</span>
             </h1>
 
             <p className="mb-10 max-w-xl text-base tracking-tight text-muted-foreground text-balance md:text-lg">
-              盯 X 作者、GitHub 发版、漏洞披露与签名窗口。
+              {t(lang, 'home.sub1')}
               <br className="hidden md:block" />
-              只回答一件事：这条东西，你现在到底能不能用。
+              {t(lang, 'home.sub2')}
             </p>
 
             <div className="z-50 flex items-center justify-center gap-4 whitespace-nowrap">
-              <SyncButton variant="primary" size="lg" label="立即同步" />
+              <SyncButton variant="primary" size="lg" label={t(lang, 'common.syncNow')} />
               <Link href="/digest">
                 <Button variant="outline" size="lg">
-                  查看今日简报
+                  {t(lang, 'common.viewDigest')}
                   <ArrowRight className="ml-2 size-4" />
                 </Button>
               </Link>
@@ -86,8 +90,8 @@ export default async function Home({ searchParams }: { searchParams: Promise<Rec
                     <span className="font-mono text-xs">radar devices --live</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Badge variant={devices.length ? 'ok' : 'ghost'}>{devices.length ? devices.length + ' 台在线' : '未连接'}</Badge>
-                    <Link href="/devices" className="font-mono text-[11px] text-neutral-500 hover:text-violet-300">设备页 →</Link>
+                    <Badge variant={devices.length ? 'ok' : 'ghost'}>{devices.length ? devices.length + ' ' + t(lang, 'common.online') : t(lang, 'common.offline')}</Badge>
+                    <Link href="/devices" className="font-mono text-[11px] text-neutral-500 hover:text-violet-300">{t(lang, 'nav.devices')} →</Link>
                   </div>
                 </div>
 
@@ -99,35 +103,35 @@ export default async function Home({ searchParams }: { searchParams: Promise<Rec
                       <div key={dev.udid} className="grid grid-cols-2 gap-6 border-b border-border/60 py-5 last:border-0 md:grid-cols-4">
                         <div>
                           <div className="flex items-center gap-1.5 text-[11px] uppercase tracking-[0.14em] text-neutral-600">
-                            <Icon className="size-3" /> 设备
+                            <Icon className="size-3" /> {t(lang, 'home.device')}
                           </div>
                           <div className="mt-2 font-heading text-[15px] leading-tight">{dev.marketing}</div>
                           <div className="mt-1 font-mono text-[11px] text-neutral-600">{dev.identifier}</div>
                         </div>
                         <div>
                           <div className="flex items-center gap-1.5 text-[11px] uppercase tracking-[0.14em] text-neutral-600">
-                            <Fingerprint className="size-3" /> 系统
+                            <Fingerprint className="size-3" /> {t(lang, 'home.system')}
                           </div>
                           <div className="mt-2 font-heading text-[15px] leading-tight">{dev.kind === 'iPad' ? 'iPadOS' : 'iOS'} {dev.version}</div>
                           <div className="mt-1 font-mono text-[11px] text-neutral-600">build {dev.build}</div>
                         </div>
                         <div>
                           <div className="flex items-center gap-1.5 text-[11px] uppercase tracking-[0.14em] text-neutral-600">
-                            <ShieldCheck className="size-3" /> 越狱
+                            <ShieldCheck className="size-3" /> {t(lang, 'home.jb')}
                           </div>
                           <div className={`mt-2 font-heading text-[15px] leading-tight ${jb.length ? 'text-emerald-300' : 'text-neutral-400'}`}>
-                            {jb.length ? jb.map((v) => v.tool).join(' / ') : '无可用工具'}
+                            {jb.length ? jb.map((v) => v.tool).join(' / ') : t(lang, 'home.noTool')}
                           </div>
                           <div className="mt-1 font-mono text-[11px] text-neutral-600">{dev.soc}</div>
                         </div>
                         <div>
                           <div className="flex items-center gap-1.5 text-[11px] uppercase tracking-[0.14em] text-neutral-600">
-                            <Terminal className="size-3" /> TrollStore
+                            <Terminal className="size-3" /> {t(lang, 'home.ts')}
                           </div>
                           <div className={`mt-2 font-heading text-[15px] leading-tight ${dev.trollstore.supported ? 'text-emerald-300' : 'text-neutral-400'}`}>
                             {dev.trollstore.supported ? '可用' : '不可用'}
                           </div>
-                          <div className="mt-1 font-mono text-[11px] text-neutral-600">上限 {dev.trollstore.max}</div>
+                          <div className="mt-1 font-mono text-[11px] text-neutral-600">{t(lang, 'home.tsMax', { v: dev.trollstore.max })}</div>
                         </div>
                       </div>
                     );
@@ -137,19 +141,19 @@ export default async function Home({ searchParams }: { searchParams: Promise<Rec
                     <div>
                       <span className="text-emerald-500">$</span> usbmuxd --list
                     </div>
-                    <div className="mt-1 text-neutral-700">no device connected</div>
+                    <div className="mt-1 text-neutral-700">{t(lang, 'home.empty.cmd')}</div>
                     <div className="mt-1 text-neutral-700">
                       <span className="animate-[caret-blink_1.25s_ease-out_infinite]">█</span>
                     </div>
                     <div className="mt-3 text-[11px] text-neutral-700">
-                      插线 → 解锁 → 点「信任」后自动出现；也可到 <Link href="/devices" className="text-violet-300/80 hover:text-violet-200">设备页</Link> 查看历史快照
+                      {t(lang, 'home.empty.hint')}
                     </div>
                   </div>
                 )}
 
                 <div className="mt-4 rounded-lg border border-border bg-neutral-950/60 px-4 py-3 font-mono text-[11.5px] leading-relaxed text-neutral-500">
                   <span className="text-emerald-500">$</span> judge --tool-public --version-in-range --soc-match{' '}
-                  <span className="text-neutral-700">// 三条全中才标可执行；私有链永不计入</span>
+                  <span className="text-neutral-700">// {t(lang, 'home.judge')}</span>
                 </div>
               </div>
             </div>
@@ -176,9 +180,9 @@ export default async function Home({ searchParams }: { searchParams: Promise<Rec
       <MaxWidthWrapper className="pt-16">
         <AnimationContainer>
           <div className="flex flex-col items-start">
-            <MagicBadge title="可以立刻做" />
+            <MagicBadge title={t(lang, 'home.act.title')} />
             <h2 className="mt-6 font-heading text-2xl font-medium leading-[1.15] md:text-4xl">
-              {actionable.length > 0 ? '今天有能动手的事' : '今天没有能动手的事'}
+              {actionable.length > 0 ? t(lang, 'home.act.has') : t(lang, 'home.act.none')}
             </h2>
             <p className="mt-3 max-w-2xl text-sm text-muted-foreground md:text-base">
               {actionable.length > 0
@@ -192,7 +196,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<Rec
           {actionable.slice(0, 5).map((it) => <ItemCard key={it.id} it={it} compact />)}
           {!actionable.length && (
             <div className="rounded-xl border border-dashed border-border bg-card/30 p-6 text-sm text-neutral-500">
-              没有可执行项。等私有链公开、或有人把利用移植到你的芯片之后，这里才会亮。
+              {t(lang, 'home.act.empty')}
             </div>
           )}
         </div>
@@ -202,12 +206,12 @@ export default async function Home({ searchParams }: { searchParams: Promise<Rec
         <AnimationContainer>
           <div className="flex items-end justify-between gap-4">
             <div>
-              <MagicBadge title={new Date().getFullYear() + ' 年情报'} />
-              <h2 className="mt-6 font-heading text-2xl font-medium md:text-4xl">按时间倒序</h2>
-              <p className="mt-2 text-[12.5px] text-neutral-500">最新发布的在最上面；超过 5 年的旧消息不再展示。</p>
+              <MagicBadge title={t(lang, 'home.feed.year', { y: new Date().getFullYear() })} />
+              <h2 className="mt-6 font-heading text-2xl font-medium md:text-4xl">{t(lang, 'home.feed.title')}</h2>
+              <p className="mt-2 text-[12.5px] text-neutral-500">{t(lang, 'home.feed.sub')}</p>
             </div>
             <Link href="/feed" className="hidden shrink-0 items-center gap-1 text-sm text-neutral-400 transition-colors hover:text-foreground md:flex">
-              查看全部 <ArrowRight className="size-3.5" />
+              {t(lang, 'home.feed.all')} <ArrowRight className="size-3.5" />
             </Link>
           </div>
         </AnimationContainer>
@@ -216,7 +220,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<Rec
           {thisYearItems.slice(0, 12).map((it) => <ItemCard key={it.id} it={it} />)}
           {!thisYearItems.length && (
             <div className="rounded-xl border border-border bg-card/40 p-8 text-center text-sm text-neutral-500">
-              今年还没有新情报。点右上角「同步」抓一次。
+              {t(lang, 'home.feed.empty')}
             </div>
           )}
         </div>
@@ -224,7 +228,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<Rec
         {olderItems.length > 0 && (
           <details className="mt-4 rounded-xl border border-border bg-card/30 p-4">
             <summary className="cursor-pointer text-[12.5px] text-neutral-500">
-              往年消息（{new Date().getFullYear() - 4}–{new Date().getFullYear() - 1}，共 {olderItems.length} 条，点开查看）
+              {t(lang, 'home.older', { a: new Date().getFullYear() - 4, b: new Date().getFullYear() - 1, n: olderItems.length })}
             </summary>
             <div className="mt-3 space-y-3">
               {olderItems.slice(0, 20).map((it) => <ItemCard key={it.id} it={it} compact />)}
@@ -235,7 +239,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<Rec
 
       <MaxWidthWrapper className="pt-16">
         <div id="health">
-          <AnimationContainer><MagicBadge title="采集健康度" /></AnimationContainer>
+          <AnimationContainer><MagicBadge title={t(lang, 'home.health')} /></AnimationContainer>
           <div className="mt-6 overflow-hidden rounded-2xl border border-border bg-card/50">
             <table className="w-full text-sm">
               <thead>
@@ -256,7 +260,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<Rec
                   </tr>
                 ))}
                 {!Object.keys(meta.sourceStatus).length && (
-                  <tr><td colSpan={4} className="px-5 py-6 text-center text-neutral-600">尚未同步</td></tr>
+                  <tr><td colSpan={4} className="px-5 py-6 text-center text-neutral-600">{t(lang, 'home.health.never')}</td></tr>
                 )}
               </tbody>
             </table>

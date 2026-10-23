@@ -9,6 +9,8 @@ import AnimationContainer from '@/components/global/animation-container';
 import MagicBadge from '@/components/ui/magic-badge';
 import DigestSwitch from '@/components/digest/DigestSwitch';
 import { toCN } from '@/lib/date';
+import { cookies } from 'next/headers';
+import { t } from '@/lib/i18n';
 
 export const dynamic = 'force-dynamic';
 
@@ -20,6 +22,7 @@ export default async function DigestPage({ searchParams }: { searchParams: Promi
   const profile = getProfile();
   const meta = getMeta();
   const initial = sp.view === 'reading' ? 'reading' : 'terminal';
+  const lang = (await cookies()).get('lang')?.value === 'en' ? 'en' : 'zh';
 
   let watch: { intervalMs?: number; lastRunAt?: string; nextRunAt?: string; runs?: number } | null = null;
   try {
@@ -32,7 +35,7 @@ export default async function DigestPage({ searchParams }: { searchParams: Promi
     <MaxWidthWrapper>
       <AnimationContainer>
         <div className="flex flex-col items-start pt-8">
-          <MagicBadge title="每日简报" />
+          <MagicBadge title={t(lang, 'page.digest.title')} />
           <h1 className="mt-6 font-heading text-3xl font-medium md:text-5xl">{date}</h1>
           <p className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted-foreground">
             <span>

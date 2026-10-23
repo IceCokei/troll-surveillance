@@ -6,10 +6,13 @@ import ProfileForm from '@/components/ProfileForm';
 import { TOOLS } from '@/lib/knowledge';
 import { getMeta, getProfile } from '@/lib/store';
 import { toolSupports } from '@/lib/analyze';
+import { cookies } from 'next/headers';
+import { t } from '@/lib/i18n';
 
 export const dynamic = 'force-dynamic';
 
-export default function Tools() {
+export default async function Tools() {
+  const lang = (await cookies()).get('lang')?.value === 'en' ? 'en' : 'zh';
   const profile = getProfile();
   const meta = getMeta();
 
@@ -28,7 +31,7 @@ export default function Tools() {
       <AnimationContainer>
         <div className="flex flex-col items-start pt-8">
           <MagicBadge title="工具矩阵" />
-          <h1 className="mt-6 font-heading text-3xl font-medium md:text-5xl">能不能用，一张表说清</h1>
+          <h1 className="mt-6 font-heading text-3xl font-medium md:text-5xl">{t(lang, 'page.tools.title')}</h1>
           <p className="mt-3 max-w-2xl text-sm text-muted-foreground">
             本机 {profile.name} · {profile.identifier} · {profile.soc} · iOS {profile.version}（{profile.build}）
             {meta.signing ? ' · 当前签名 ' + (meta.signing.signed.map((s) => s.version).join(', ') || '无') : ''}

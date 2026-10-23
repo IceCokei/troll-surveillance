@@ -1,8 +1,10 @@
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
+import { cookies, headers } from 'next/headers';
 import './globals.css';
 import Navbar from '@/components/site/navbar';
 import Footer from '@/components/site/footer';
+import type { Lang } from '@/lib/i18n';
 
 const aeonik = localFont({
   src: [
@@ -17,22 +19,29 @@ const aeonik = localFont({
 });
 
 export const metadata: Metadata = {
-  title: 'iOS 越狱雷达 · Jailbreak Radar',
-  description: '监控 iOS 越狱生态：作者动态、工具发版、漏洞情报与设备可用性分析',
+  title: 'Troll Surveillance · iOS jailbreak radar',
+  description: 'Track iOS jailbreak and TrollStore intel, with per-device verdicts and a daily digest.',
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const jar = await cookies();
+  const hdrs = await headers();
+  const langValue = hdrs.get('x-lang') ?? jar.get('lang')?.value;
+  const themeValue = hdrs.get('x-theme') ?? jar.get('theme')?.value;
+  const lang: Lang = langValue === 'en' ? 'en' : 'zh';
+  const theme = themeValue === 'light' ? 'light' : 'dark';
+
   return (
-    <html lang="zh-CN" className={aeonik.variable}>
+    <html lang={lang === 'en' ? 'en' : 'zh-CN'} className={aeonik.variable + ' ' + (theme === 'light' ? 'light' : '')}>
       <body className="min-h-screen bg-background text-foreground antialiased overflow-x-hidden font-default">
         <div className="pointer-events-none fixed inset-0 z-[-1]">
           <div className="absolute inset-0 grid-bg" />
           <div className="absolute inset-x-0 top-0 h-[520px] bg-[radial-gradient(60%_50%_at_50%_0%,rgba(168,85,247,0.14)_0,rgba(168,85,247,0)_70%)]" />
           <div className="absolute inset-0 noise" />
         </div>
-        <Navbar />
+        <Navbar lang={lang} theme={theme} />
         <main className="relative z-0 mx-auto mt-8 w-full">{children}</main>
-        <Footer />
+        <Footer lang={lang} />
       </body>
     </html>
   );
