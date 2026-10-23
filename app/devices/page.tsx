@@ -9,6 +9,7 @@ import { getItems } from '@/lib/store';
 import { byTimeDesc, withinYears } from '@/lib/fresh';
 import { listDevices, maskDevice, TROLLSTORE_MAX } from '@/lib/devices';
 import { TS_TOOLS, toolVerdict } from '@/lib/trollstore';
+import { EXPLOITS, exploitApplies } from '@/lib/exploits';
 import { t } from '@/lib/i18n';
 
 export const dynamic = 'force-dynamic';
@@ -20,6 +21,11 @@ export default async function DevicesPage({ searchParams }: { searchParams: Prom
   const [rawDevices, rawItems] = await Promise.all([listDevices(), Promise.resolve(getItems())]);
   const devices = redact ? rawDevices.map(maskDevice) : rawDevices;
   const items = rawItems.filter((i) => withinYears(i.publishedAt)).sort(byTimeDesc);
+
+  const deviceExploits = devices.map((d) => ({
+    device: d,
+    hits: EXPLOITS.filter((e) => exploitApplies(e, d.chipClass, d.version).ok),
+  }));
 
   const tsTools = TS_TOOLS.map((t) => {
     const feed = items
@@ -153,6 +159,35 @@ export default async function DevicesPage({ searchParams }: { searchParams: Prom
               @{h}
             </a>
           ))}
+        </div>
+      </AnimationContainer>
+
+      <AnimationContainer delay={0.12}>
+        <div className="mt-10">
+          <MagicBadge title="公开利用代码覆盖" />
+          <p className="mt-3 max-w-2xl text-[12.5px] leading-relaxed text-neutral-500">
+            只做静态匹配：芯片类别 + 系统版本是否落在这些公开仓库声明的范围内。命中不等于能越狱，详见
+            <Link href="/exploits" className="text-violet-300 hover:underline"> 漏洞研究</Link>。
+          </p>
+          <div className="mt-4 space-y-2">
+            {deviceExploits.map((row) => (
+              <div key={row.device.udid} className="rounded-xl border border-border bg-card/40 p-4">
+                <div className="flex flex-wrap items-center gap-2 text-[12.5px]">
+                  <span className="font-heading">{row.device.marketing}</span>
+                  <Badge variant="ghost">{row.device.version}</Badge>
+                </div>
+                <div className="mt-2 flex flex-wrap gap-1.5">
+                  {row.hits.map((h) => (
+                    <span key={h.name} className="rounded-md border border-emerald-500/25 bg-emerald-500/[0.07] px-2 py-0.5 text-[11px] text-emerald-200/80">
+                      {h.name}
+                    </span>
+                  ))}
+                  {!row.hits.length && <span className="text-[11.5px] text-neutral-600">没有公开利用代码覆盖这台设备的版本与芯片</span>}
+                </div>
+              </div>
+            ))}
+            {!deviceExploits.length && <div className="text-[11.5px] text-neutral-600">未连接设备时无法匹配。</div>}
+          </div>
         </div>
       </AnimationContainer>
 

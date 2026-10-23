@@ -27,6 +27,7 @@ export default function Navbar({ lang, theme }: { lang: Lang; theme: 'dark' | 'l
     { href: '/feed', label: t(lang, 'nav.feed') },
     { href: '/devices', label: t(lang, 'nav.devices') },
     { href: '/sources', label: t(lang, 'nav.sources') },
+    { href: '/exploits', label: t(lang, 'nav.exploits') },
     { href: '/tools', label: t(lang, 'nav.tools') },
     { href: '/digest', label: t(lang, 'nav.digest') },
   ];
