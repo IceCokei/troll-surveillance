@@ -106,7 +106,7 @@ export function listDigests(): string[] {
   ensure();
   return fs
     .readdirSync(DIGEST_DIR)
-    .filter((f) => f.endsWith('.md'))
+    .filter((f) => f.endsWith('.md') && !f.endsWith('.en.md'))
     .map((f) => f.replace(/\.md$/, ''))
     .sort()
     .reverse();

@@ -166,3 +166,34 @@
 .light .hover\:bg-neutral-900\/40:hover { background-color: rgba(0,0,0,0.04); }
 .light .bg-neutral-900\/60 { background-color: rgba(0,0,0,0.05); }
 
+
+/* 亮色模式下终端保持深色配色（macOS Terminal 语义），只让页面外壳变浅 */
+.light .terminal-frame .text-neutral-200 { color: #e8e8ea; }
+.light .terminal-frame .text-neutral-300 { color: #d4d4d8; }
+.light .terminal-frame .text-neutral-400 { color: #a1a1aa; }
+.light .terminal-frame .text-neutral-500 { color: #8f8f98; }
+.light .terminal-frame .text-neutral-600 { color: #7c7c85; }
+.light .terminal-frame .text-neutral-700 { color: #6f6f78; }
+.light .terminal-frame .text-neutral-800 { color: #55555d; }
+.light .terminal-frame .text-violet-200 { color: #ddd6fe; }
+.light .terminal-frame .text-violet-300 { color: #c4b5fd; }
+.light .terminal-frame .text-violet-400 { color: #a78bfa; }
+.light .terminal-frame .text-emerald-300,
+.light .terminal-frame .text-emerald-400 { color: #6ee7b7; }
+.light .terminal-frame .text-amber-300,
+.light .terminal-frame .text-amber-400 { color: #fcd34d; }
+.light .terminal-frame .text-rose-300 { color: #fda4af; }
+.light .terminal-frame .text-sky-300 { color: #7dd3fc; }
+.light .terminal-frame .bg-neutral-900\/40 { background-color: rgba(255, 255, 255, 0.035); }
+.light .terminal-frame .bg-neutral-900\/60 { background-color: rgba(255, 255, 255, 0.05); }
+.light .terminal-frame .bg-neutral-800\/70 { background-color: rgba(255, 255, 255, 0.08); }
+.light .terminal-frame .bg-neutral-950\/30,
+.light .terminal-frame .bg-neutral-950\/60 { background-color: rgba(255, 255, 255, 0.03); }
+.light .terminal-frame .border-neutral-800,
+.light .terminal-frame .border-neutral-700,
+.light .terminal-frame .border-border { border-color: rgba(255, 255, 255, 0.12); }
+.light .terminal-frame .bg-violet-500\/10 { background-color: rgba(167, 139, 250, 0.14); }
+.light .terminal-frame .border-violet-500 { border-color: rgba(167, 139, 250, 0.45); }
+.light .terminal-frame .bg-emerald-500\/\[0\.07\] { background-color: rgba(110, 231, 183, 0.1); }
+.light .terminal-frame .text-foreground { color: #ececf1; }
+

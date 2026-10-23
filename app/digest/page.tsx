@@ -46,7 +46,7 @@ export default async function DigestPage({ searchParams }: { searchParams: Promi
             {watch?.intervalMs && (
               <span className="text-neutral-600">
                 · {lang === 'en' ? 'auto-sync every ' + Math.round(watch.intervalMs / 1000) + 's' : '每 ' + Math.round(watch.intervalMs / 1000) + ' 秒自动同步'}
-                {watch.nextRunAt ? '，下次 ' + toCN(watch.nextRunAt, false) : ''}
+                {watch.nextRunAt ? (lang === 'en' ? ', next ' : '，下次 ') + toCN(watch.nextRunAt, false) : ''}
               </span>
             )}
           </p>

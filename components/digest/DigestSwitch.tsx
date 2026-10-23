@@ -46,15 +46,15 @@ export default function DigestSwitch({
       </div>
 
       {view === 'terminal' ? (
-        <TerminalFrame title={'~/ios-radar/data/digests/' + date + '.md'} meta={'zsh · ' + device}>
+        <TerminalFrame title={'~/ios-radar/data/digests/' + date + (lang === 'en' ? '.en' : '') + '.md'} meta={'zsh · ' + device}>
           <div className="font-mono text-[11.5px] leading-relaxed">
             <div className="mb-4 flex flex-wrap items-center gap-2 text-neutral-600">
               <span className="text-emerald-400">➜</span>
               <span className="text-violet-300">~/ios-radar</span>
-              <span>radar digest --date {date} --device {device}</span>
+              <span>radar digest --date {date}{lang === 'en' ? '.en' : ''} --device {device}</span>
               <span className="ml-auto text-neutral-700">[{markdown.split('\n').length} lines]</span>
             </div>
-            <DigestView markdown={markdown} variant="terminal" />
+            <DigestView markdown={markdown} variant="terminal" lang={lang} />
             <div className="mt-4 flex items-center gap-1.5 text-neutral-600">
               <span className="text-emerald-400">➜</span>
               <span className="text-violet-300">~/ios-radar</span>
@@ -63,7 +63,7 @@ export default function DigestSwitch({
           </div>
         </TerminalFrame>
       ) : (
-        <DigestView markdown={markdown} variant="reading" />
+        <DigestView markdown={markdown} variant="reading" lang={lang} />
       )}
     </>
   );

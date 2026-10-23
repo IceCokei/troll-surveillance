@@ -73,7 +73,7 @@ function TerminalSection({ num, title, count, children }: { num?: string; title:
   );
 }
 
-export default function DigestView({ markdown, variant = 'reading' }: { markdown: string; variant?: Variant }) {
+export default function DigestView({ markdown, variant = 'reading', lang = 'zh' }: { markdown: string; variant?: Variant; lang?: 'zh' | 'en' }) {
   const blocks = parseMarkdown(markdown);
   const sections: { title: string; num?: string; count?: string; blocks: Block[] }[] = [];
   let cur: (typeof sections)[number] | null = null;
@@ -118,7 +118,7 @@ export default function DigestView({ markdown, variant = 'reading' }: { markdown
           }
           return (
             <div key={idx} className="relative overflow-hidden rounded-2xl border border-violet-500/20 bg-[radial-gradient(120%_120%_at_0%_0%,rgba(139,92,246,0.14),transparent_60%)] p-6">
-              <div className="text-[11px] uppercase tracking-[0.16em] text-violet-300/70">今日结论</div>
+              <div className="text-[11px] uppercase tracking-[0.16em] text-violet-300/70">{lang === 'en' ? 'verdict' : '今日结论'}</div>
               <p className="mt-2.5 font-heading text-[17px] leading-relaxed text-foreground md:text-lg">
                 <InlineText parts={parseInline(text)} />
               </p>

@@ -14,7 +14,7 @@ export default function TerminalFrame({
   return (
     <div
       className={cn(
-        'relative overflow-hidden rounded-xl border border-neutral-800 bg-[#08080a] shadow-[0_24px_80px_-32px_rgba(0,0,0,0.9)]',
+        'terminal-frame relative overflow-hidden rounded-xl border border-neutral-800 bg-[#08080a] shadow-[0_24px_80px_-32px_rgba(0,0,0,0.9)]',
         className
       )}
     >
