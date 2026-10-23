@@ -1,0 +1,100 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 0 0% 9%;
+    --secondary: 0 0% 14.9%;
+    --secondary-foreground: 0 0% 98%;
+    --tertiary: 0 0% 90%;
+    --tertiary-foreground: 0 0% 9%;
+    --subtle: 240 6% 90%;
+    --subtle-foreground: 0 0% 9%;
+    --muted: 0 0% 14.9%;
+    --muted-foreground: 0 0% 63.9%;
+    --accent: 0 0% 14.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 14.9%;
+    --input: 0 0% 14.9%;
+    --ring: 0 0% 83.1%;
+    --radius: 0.5rem;
+    --font-inter: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  }
+
+  * { @apply border-border; }
+
+  html { scrollbar-width: thin; scrollbar-color: #262626 transparent; }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: 'rlig' 1, 'calt' 1;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection { background-color: rgba(168, 85, 247, 0.22); color: hsl(var(--foreground)); }
+
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-thumb { background-color: #262626; border-radius: 3px; }
+  ::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0); }
+}
+
+@layer base {
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-14px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+}
+
+@layer utilities {
+  /* linkify 同款 conic 光斑 */
+  .gradient {
+    background: conic-gradient(from 230.29deg at 51.63% 52.16%, rgb(36, 0, 255) 0deg, rgb(0, 135, 255) 67.5deg, rgb(108, 39, 157) 198.75deg, rgb(24, 38, 163) 251.25deg, rgb(54, 103, 196) 301.88deg, rgb(105, 30, 255) 360deg);
+  }
+
+  .text-gradient {
+    @apply bg-gradient-to-r from-violet-500 to-fuchsia-500 bg-clip-text text-transparent;
+  }
+
+  .grid-bg {
+    background-image: linear-gradient(to right, #161616 1px, transparent 1px),
+      linear-gradient(to bottom, #161616 1px, transparent 1px);
+    background-size: 3rem 3rem;
+    mask-image: radial-gradient(ellipse 60% 50% at 50% 0%, #000 70%, transparent 110%);
+    -webkit-mask-image: radial-gradient(ellipse 60% 50% at 50% 0%, #000 70%, transparent 110%);
+  }
+
+  .noise {
+    background-image: url('/img/noise.webp');
+    background-repeat: repeat;
+    opacity: 0.035;
+    pointer-events: none;
+  }
+
+  .glass {
+    background: rgba(10, 10, 10, 0.55);
+    backdrop-filter: blur(14px) saturate(140%);
+  }
+
+  .shadow-inset-pill {
+    box-shadow: 0 1000px 0 0 hsl(0 0% 20%) inset;
+  }
+
+  .mask-fade-b {
+    mask-image: linear-gradient(to bottom, #000 60%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, #000 60%, transparent 100%);
+  }
+}

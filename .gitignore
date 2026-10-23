@@ -1,0 +1,18 @@
+# deps / build
+node_modules/
+.next/
+*.log
+logs/
+
+# runtime data (contains scraped content and device identifiers)
+data/*.json
+data/digests/*.md
+data/xposts-cache.json
+!data/.gitkeep
+
+# local env
+.env
+.env.local
+
+# macOS
+.DS_Store
