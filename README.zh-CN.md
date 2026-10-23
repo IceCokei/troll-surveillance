@@ -133,6 +133,15 @@ docs/           研究文档与截图
 
 Troll Surveillance 是**信息项目**，不分发漏洞利用、修改版固件或越狱工具。设备判定仅供参考，依据是各工具作者自己的公开声明。把设备冻结在旧系统意味着放弃安全更新，这个取舍由你承担。使用风险自负；与 Apple、Calif.io 或任何工具厂商无关。
 
+## 公开利用代码跟踪（/exploits）
+
+- **登记表** — `lib/exploits.ts`：ipwndfu/checkm8、kfd、MacDirtyCow、TrollStore CoreTrust、palera1n、Nugget SparseRestore、roothide Bootstrap
+- **探测** — `scripts/exploit-probe.ts` 读取各仓库的 `commits.atom`（最后提交）与 `README`（声明支持区间、构建方式），写入 `data/exploits.json`
+- **展示** — `/exploits` 列出声明支持 / 构建方式 / 最后提交；`/devices` 显示每台设备被哪些公开利用覆盖
+- **只做静态分析** — 不执行任何利用代码。公开 PoC ≠ 可用越狱：还缺沙盒逃逸、PAC/SPTM/MIE 绕过、签名绕过与启动持久化
+
+![公开利用代码](docs/screenshots/skin-exploits.png)
+
 ## Star History
 
 <a href="https://www.star-history.com/?repos=icecokei%2Ftroll-surveillance.git&type=timeline&legend=bottom-right">

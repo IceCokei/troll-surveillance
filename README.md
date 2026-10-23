@@ -133,6 +133,15 @@ docs/           research docs and screenshots
 
 Troll Surveillance is an **information project**. It does not ship exploits, patched IPSWs, or jailbreak tooling. Device verdicts are advisory and derived from public statements by the tools' own authors. Freezing a device on an old iOS build means forgoing security fixes — that trade-off is yours. Use at your own risk; not affiliated with Apple, Calif.io, or any tool vendor.
 
+## Exploit tracking (/exploits)
+
+- **Registry** — `lib/exploits.ts`: ipwndfu/checkm8, kfd, MacDirtyCow, TrollStore CoreTrust, palera1n, Nugget SparseRestore, roothide Bootstrap
+- **Probe** — `scripts/exploit-probe.ts` reads each repo's `commits.atom` (last commit) and `README` (declared iOS ranges, build system) into `data/exploits.json`
+- **Surfacing** — `/exploits` lists declared support, build system and last commit; `/devices` shows which public exploits cover each connected device
+- **Static only** — nothing is executed. A public PoC is not a usable jailbreak: you still need a sandbox escape, PAC/SPTM/MIE bypass, code-signing bypass and boot persistence
+
+![Exploit tracking](docs/screenshots/skin-exploits.png)
+
 ## Star History
 
 <a href="https://www.star-history.com/?repos=icecokei%2Ftroll-surveillance.git&type=timeline&legend=bottom-right">
@@ -146,5 +155,3 @@ Troll Surveillance is an **information project**. It does not ship exploits, pat
 ## License
 
 MIT — see [LICENSE](LICENSE).
-
-## 公开利用代码跟踪（/exploits）\n\n- 登记表：（ipwndfu/checkm8、kfd、MacDirtyCow、TrollStore CoreTrust、palera1n、Nugget SparseRestore、roothide Bootstrap）\n- 探测脚本： → 读取各仓库 （最后提交）+ （声明支持、构建方式），写入 \n- 页面： 展示声明支持 / 构建方式 / 最后提交； 每台设备列出「被哪些公开利用覆盖」\n- **只做静态分析，不执行任何利用代码**：公开 PoC ≠ 可用越狱（缺沙盒逃逸、PAC/SPTM/MIE 绕过、签名绕过、持久化）\n
