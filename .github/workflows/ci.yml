@@ -1,0 +1,62 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: build (next)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - run: npm run build
+
+  docs:
+    name: docs sanity
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: No literal \n in markdown (catches broken shell appends)
+        run: |
+          if grep -n '\\n' README.md README.zh-CN.md CONTRIBUTING.md docs/*.md; then
+            echo "::error::Found literal backslash-n in markdown. Use a real newline."
+            exit 1
+          fi
+          echo "ok"
+
+      - name: Unbalanced inline code fences
+        run: |
+          for f in README.md README.zh-CN.md CONTRIBUTING.md; do
+            n=$(grep -o '`' "$f" | wc -l | tr -d ' ')
+            if [ $((n % 2)) -ne 0 ]; then
+              echo "::error file=$f::Odd number of backticks ($n) — probably a missing closing fence"
+              exit 1
+            fi
+          done
+          echo "ok"
+
+      - name: Markdown lint
+        uses: DavidAnson/markdownlint-cli2-action@v16
+        with:
+          globs: |
+            README.md
+            README.zh-CN.md
+            CONTRIBUTING.md
+            docs/**/*.md
+          config: |
+            {
+              "MD013": false,
+              "MD033": false,
+              "MD041": false,
+              "MD024": false,
+              "MD040": false
+            }
