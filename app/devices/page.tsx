@@ -14,6 +14,14 @@ import { t } from '@/lib/i18n';
 
 export const dynamic = 'force-dynamic';
 
+const KIND_EN: Record<string, string> = {
+  '安装器': 'installer',
+  '注入/插件': 'injector / tweak',
+  '包管理': 'package manager',
+  '侧载': 'sideload',
+  '免越狱改机': 'tweakless mods',
+};
+
 export default async function DevicesPage({ searchParams }: { searchParams: Promise<Record<string, string | undefined>> }) {
   const sp = await searchParams;
   const redact = sp.redact === '1';
@@ -58,40 +66,39 @@ export default async function DevicesPage({ searchParams }: { searchParams: Prom
     <MaxWidthWrapper>
       <AnimationContainer>
         <div className="flex flex-col items-start pt-8">
-          <MagicBadge title="设备与 TrollStore" />
+          <MagicBadge title={t(lang, 'devices.badge')} />
           <h1 className="mt-6 font-heading text-3xl font-medium md:text-5xl">{t(lang, 'page.devices.title')}</h1>
           <p className="mt-3 max-w-2xl text-sm text-muted-foreground">
-            每 5 秒通过 usbmuxd 轮询：连接/断开、机型、系统、越狱与 TrollStore 的判定实时更新。
-            判定只针对设备当前这个系统版本，不看别的版本能不能刷。
+            {t(lang, 'devices.connectHint')}
           </p>
         </div>
       </AnimationContainer>
 
       <div className="mt-6">
-        <LiveDevices initial={devices} redact={redact} />
+        <LiveDevices initial={devices} redact={redact} lang={lang} />
       </div>
 
       <AnimationContainer delay={0.05}>
         <div className="mt-6 grid gap-3 md:grid-cols-3">
           <div className="rounded-2xl border border-border bg-card/40 p-5">
-            <div className="text-[11px] uppercase tracking-[0.14em] text-neutral-600">TrollStore 支持上限</div>
+            <div className="text-[11px] uppercase tracking-[0.14em] text-neutral-600">{t(lang, 'devices.limitTs')}</div>
             <div className="mt-2 font-heading text-2xl">≤ {TROLLSTORE_MAX}</div>
             <p className="mt-2 text-[12px] leading-relaxed text-neutral-500">
-              TrollStore 2 依赖 CoreTrust 多次签名校验漏洞；17.0 以上已修补，没有「TrollStore Lite」这种东西。
+              {t(lang, 'devices.intro')}
             </p>
           </div>
           <div className="rounded-2xl border border-border bg-card/40 p-5">
-            <div className="text-[11px] uppercase tracking-[0.14em] text-neutral-600">M 系 iPad 越狱上限</div>
+            <div className="text-[11px] uppercase tracking-[0.14em] text-neutral-600">{t(lang, 'devices.limitM')}</div>
             <div className="mt-2 font-heading text-2xl">Dopamine ≤ 17.3.1</div>
             <p className="mt-2 text-[12px] leading-relaxed text-neutral-500">
-              M1/M2 设备走 Dopamine 只能到 17.3.1；17.4 之后没有公开方案。
+              {t(lang, 'devices.mIntro')}
             </p>
           </div>
           <div className="rounded-2xl border border-border bg-card/40 p-5">
-            <div className="text-[11px] uppercase tracking-[0.14em] text-neutral-600">你现在该盯什么</div>
-            <div className="mt-2 font-heading text-2xl">自己的版本号</div>
+            <div className="text-[11px] uppercase tracking-[0.14em] text-neutral-600">{t(lang, 'devices.watch')}</div>
+            <div className="mt-2 font-heading text-2xl">{t(lang, 'devices.watchValue')}</div>
             <p className="mt-2 text-[12px] leading-relaxed text-neutral-500">
-              不是「最新签名版本」，也不是「能不能刷别的版本」——只看你手上这个 build 有没有人做出东西。
+              {t(lang, 'devices.watchBody')}
             </p>
           </div>
         </div>
@@ -100,10 +107,10 @@ export default async function DevicesPage({ searchParams }: { searchParams: Prom
       <AnimationContainer delay={0.07}>
         <div className="mt-10 flex flex-wrap items-end justify-between gap-3">
           <div>
-            <MagicBadge title="TrollStore 生态工具" />
-            <h2 className="mt-4 font-heading text-xl font-medium md:text-2xl">GitHub 上还在更新的公开工具</h2>
+            <MagicBadge title={t(lang, 'devices.toolsBadge')} />
+            <h2 className="mt-4 font-heading text-xl font-medium md:text-2xl">{t(lang, 'devices.toolsTitle')}</h2>
             <p className="mt-2 max-w-2xl text-[12.5px] leading-relaxed text-neutral-500">
-              「最新更新」来自各仓库的 commits.atom（不走 API 限额）；「对你的设备」按你当前系统版本 + 是否已有 TrollStore 判定。
+              {t(lang, 'devices.toolsSub')}
             </p>
           </div>
         </div>
@@ -112,11 +119,11 @@ export default async function DevicesPage({ searchParams }: { searchParams: Prom
           <table className="w-full text-[12.5px]">
             <thead>
               <tr className="border-b border-border text-[10.5px] uppercase tracking-[0.12em] text-neutral-600">
-                <th className="px-4 py-2.5 text-left font-medium">工具</th>
-                <th className="px-4 py-2.5 text-left font-medium">类型</th>
-                <th className="px-4 py-2.5 text-left font-medium">最新更新</th>
-                <th className="px-4 py-2.5 text-left font-medium">前提</th>
-                <th className="px-4 py-2.5 text-left font-medium">对你的设备</th>
+                <th className="px-4 py-2.5 text-left font-medium">{t(lang, 'devices.thTool')}</th>
+                <th className="px-4 py-2.5 text-left font-medium">{t(lang, 'devices.thKind')}</th>
+                <th className="px-4 py-2.5 text-left font-medium">{t(lang, 'devices.thLatest')}</th>
+                <th className="px-4 py-2.5 text-left font-medium">{t(lang, 'devices.thPrereq')}</th>
+                <th className="px-4 py-2.5 text-left font-medium">{t(lang, 'devices.thYours')}</th>
               </tr>
             </thead>
             <tbody>
@@ -126,25 +133,25 @@ export default async function DevicesPage({ searchParams }: { searchParams: Prom
                     <a href={tool.url} target="_blank" rel="noreferrer" className="font-heading text-[13px] text-neutral-200 hover:text-violet-300">{tool.name}</a>
                     <div className="mt-0.5 font-mono text-[10.5px] text-neutral-700">{tool.repo}</div>
                   </td>
-                  <td className="px-4 py-3 text-[11.5px] text-neutral-500">{tool.kind}</td>
+                  <td className="px-4 py-3 text-[11.5px] text-neutral-500">{lang === 'en' ? KIND_EN[tool.kind] || tool.kind : tool.kind}</td>
                   <td className="px-4 py-3 font-mono text-[11px] text-neutral-500">
-                    {latest ? latest.publishedAt.slice(0, 10) : '未抓到'}
+                    {latest ? latest.publishedAt.slice(0, 10) : t(lang, 'devices.noneHit')}
                     {latest && <div className="mt-0.5 max-w-[220px] truncate text-[10.5px] text-neutral-700">{latest.title}</div>}
                   </td>
                   <td className="px-4 py-3 text-[11.5px] text-neutral-500">
-                    {tool.needsTrollStore ? '需 TrollStore' : '不需要'}
+                    {tool.needsTrollStore ? t(lang, 'devices.needTs') : t(lang, 'devices.noNeedTs')}
                     <div className="text-[10.5px] text-neutral-700">
-                      {tool.minVersion || '—'} ≤ iOS ≤ {tool.maxVersion || '不限'}
+                      {tool.minVersion || '—'} ≤ iOS ≤ {tool.maxVersion || t(lang, 'devices.infinite')}
                     </div>
                   </td>
                   <td className="px-4 py-3">
                     {perDevice.map((p) => (
                       <div key={p.device.udid} className="flex flex-wrap items-baseline gap-1.5 text-[11.5px]">
-                        <span className={p.ok ? 'text-emerald-300/90' : 'text-neutral-600'}>{p.ok ? '✓ 可用' : '✕ 不可用'}</span>
+                        <span className={p.ok ? 'text-emerald-300/90' : 'text-neutral-600'}>{p.ok ? t(lang, 'devices.okMark') : t(lang, 'devices.badMark')}</span>
                         <span className="text-neutral-600">{p.why}</span>
                       </div>
                     ))}
-                    {!perDevice.length && <span className="text-[11.5px] text-neutral-600">未连接设备</span>}
+                    {!perDevice.length && <span className="text-[11.5px] text-neutral-600">{t(lang, 'devices.noDevice')}</span>}
                   </td>
                 </tr>
               ))}
@@ -153,7 +160,7 @@ export default async function DevicesPage({ searchParams }: { searchParams: Prom
         </div>
 
         <div className="mt-3 flex flex-wrap items-center gap-2 text-[11.5px] text-neutral-500">
-          <span className="text-neutral-600">TrollStore 相关作者：</span>
+          <span className="text-neutral-600">{t(lang, 'devices.authors')}</span>
           {['opa334dev', 'verygenericname', 'Lessica', 'dhinakg'].map((h) => (
             <a key={h} href={'https://x.com/' + h} target="_blank" rel="noreferrer" className="rounded-full border border-border px-2.5 py-0.5 font-mono text-[10.5px] text-neutral-400 hover:border-neutral-700 hover:text-violet-300">
               @{h}
@@ -164,10 +171,10 @@ export default async function DevicesPage({ searchParams }: { searchParams: Prom
 
       <AnimationContainer delay={0.12}>
         <div className="mt-10">
-          <MagicBadge title="公开利用代码覆盖" />
+          <MagicBadge title={t(lang, 'devices.exploitTitle')} />
           <p className="mt-3 max-w-2xl text-[12.5px] leading-relaxed text-neutral-500">
-            只做静态匹配：芯片类别 + 系统版本是否落在这些公开仓库声明的范围内。命中不等于能越狱，详见
-            <Link href="/exploits" className="text-violet-300 hover:underline"> 漏洞研究</Link>。
+            {t(lang, 'devices.exploitSub')}
+            <Link href="/exploits" className="text-violet-300 hover:underline"> {t(lang, 'nav.exploits')}</Link>。
           </p>
           <div className="mt-4 space-y-2">
             {deviceExploits.map((row) => (
@@ -182,11 +189,11 @@ export default async function DevicesPage({ searchParams }: { searchParams: Prom
                       {h.name}
                     </span>
                   ))}
-                  {!row.hits.length && <span className="text-[11.5px] text-neutral-600">没有公开利用代码覆盖这台设备的版本与芯片</span>}
+                  {!row.hits.length && <span className="text-[11.5px] text-neutral-600">{t(lang, 'devices.noneCover')}</span>}
                 </div>
               </div>
             ))}
-            {!deviceExploits.length && <div className="text-[11.5px] text-neutral-600">未连接设备时无法匹配。</div>}
+            {!deviceExploits.length && <div className="text-[11.5px] text-neutral-600">{t(lang, 'devices.disconnected')}</div>}
           </div>
         </div>
       </AnimationContainer>
@@ -196,13 +203,13 @@ export default async function DevicesPage({ searchParams }: { searchParams: Prom
           <div className="mt-8">
             <div className="flex flex-wrap items-end justify-between gap-3">
               <div>
-                <MagicBadge title={'在等 ' + device.version} />
+                <MagicBadge title={t(lang, 'devices.pending') + ' ' + device.version} />
                 <h2 className="mt-4 font-heading text-xl font-medium md:text-2xl">
-                  {device.marketing} · 谁提到过 {device.version} / {device.identifier}
+                  {device.marketing} · {t(lang, 'devices.whoMentioned')} {device.version} / {device.identifier}
                 </h2>
               </div>
               <Link href={'/feed?q=' + encodeURIComponent(device.version)} className="text-[12px] text-neutral-500 hover:text-foreground">
-                在情报里搜 {device.version} →
+                {t(lang, 'devices.searchIntel')} {device.version} →
               </Link>
             </div>
 
@@ -225,9 +232,9 @@ export default async function DevicesPage({ searchParams }: { searchParams: Prom
               ))}
               {!hits.length && (
                 <div className="rounded-xl border border-dashed border-border p-6 text-center text-[12px] leading-relaxed text-neutral-500">
-                  目前没有任何情报提到 {device.version} 的越狱或 TrollStore 方案。
+                  {t(lang, 'devices.noneMentioned')}
                   <br />
-                  一旦出现，这个区块会自动列出；也可以看 <Link href="/feed" className="text-violet-300 hover:underline">全部情报</Link>。
+                  {t(lang, 'devices.appearHint')} <Link href="/feed" className="text-violet-300 hover:underline">{t(lang, 'devices.allIntel')}</Link>
                 </div>
               )}
             </div>
@@ -238,8 +245,8 @@ export default async function DevicesPage({ searchParams }: { searchParams: Prom
       <AnimationContainer delay={0.1}>
         <div className="mt-10 flex items-end justify-between gap-3">
           <div>
-            <MagicBadge title="TrollStore 动态" />
-            <h2 className="mt-4 font-heading text-xl font-medium md:text-2xl">永久签名相关的所有消息</h2>
+            <MagicBadge title={t(lang, 'devices.tsNews')} />
+            <h2 className="mt-4 font-heading text-xl font-medium md:text-2xl">{t(lang, 'devices.tsNewsTitle')}</h2>
           </div>
           <Link href="/feed?q=trollstore" className="text-[12px] text-neutral-500 hover:text-foreground">全部 →</Link>
         </div>

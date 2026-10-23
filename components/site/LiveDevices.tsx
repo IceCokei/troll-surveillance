@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 
 interface Verdict { tool: string; supported: boolean; why: string }
 interface Target { tool: string; max: string; gap: string; supported: boolean; note: string }
+import { t as tr, type Lang } from '@/lib/i18n';
 interface Device {
   udid: string;
   identifier: string;
@@ -32,7 +33,7 @@ function mask(list: Device[] | null, redact?: boolean): Device[] | null {
   return list.map((d) => ({ ...d, udid: '…', name: d.kind === 'iPad' ? 'iPad' : 'iPhone', modelNumber: '—', region: '—' }));
 }
 
-export default function LiveDevices({ compact = false, initial = null, redact = false }: { compact?: boolean; initial?: Device[] | null; redact?: boolean }) {
+export default function LiveDevices({ compact = false, initial = null, redact = false, lang = 'zh' }: { compact?: boolean; initial?: Device[] | null; redact?: boolean; lang?: Lang }) {
   const [devices, setDevices] = useState<Device[] | null>(initial);
   const masked = mask(devices, redact);
   const [checkedAt, setCheckedAt] = useState<string>('');
@@ -65,15 +66,15 @@ export default function LiveDevices({ compact = false, initial = null, redact = 
   return (
     <div className="rounded-2xl border border-border bg-card/40 p-5">
       <div className="flex flex-wrap items-center gap-2">
-        <span className="text-[11px] uppercase tracking-[0.14em] text-neutral-600">实机连接</span>
+        <span className="text-[11px] uppercase tracking-[0.14em] text-neutral-600">{tr(lang, 'live.title')}</span>
         <span className={cn('inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[11px]', connected ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-300' : 'border-neutral-700 bg-neutral-900 text-neutral-500')}>
           <span className={cn('relative flex size-1.5', connected && 'animate-pulse')}>
             <span className={cn('size-1.5 rounded-full', connected ? 'bg-emerald-400' : 'bg-neutral-600')} />
           </span>
-          {masked === null ? '检测中…' : connected ? '已连接 ' + masked!.length + ' 台' : '未连接'}
+          {masked === null ? tr(lang, 'live.detecting') : connected ? tr(lang, 'live.connected', { n: masked!.length }) : tr(lang, 'live.offline')}
         </span>
         <span className="ml-auto flex items-center gap-2 font-mono text-[10.5px] text-neutral-600">
-          {checkedAt && '刷新于 ' + new Date(checkedAt).toLocaleTimeString('zh-CN', { timeZone: 'Asia/Shanghai', hour12: false })}
+          {checkedAt && tr(lang, 'live.refresh', { t: new Date(checkedAt).toLocaleTimeString(lang === 'en' ? 'en-GB' : 'zh-CN', { timeZone: 'Asia/Shanghai', hour12: false }) })}
           <button onClick={poll} className="rounded p-1 hover:bg-neutral-800 hover:text-neutral-300" title="立即刷新">
             {busy ? <Loader2 className="size-3 animate-spin" /> : <RefreshCw className="size-3" />}
           </button>
@@ -89,7 +90,7 @@ export default function LiveDevices({ compact = false, initial = null, redact = 
       {masked?.length === 0 && (
         <div className="mt-4 flex flex-wrap items-center gap-2 rounded-xl border border-dashed border-neutral-800 p-4 text-[12px] text-neutral-500">
           <Cable className="size-4 text-neutral-600" />
-          没检测到设备。插线 → 解锁 → 点「信任」后会自动出现（每 5 秒轮询，无需刷新页面）。
+          {tr(lang, 'live.hint')}
         </div>
       )}
 
@@ -119,16 +120,16 @@ export default function LiveDevices({ compact = false, initial = null, redact = 
 
               {!compact && (
                 <div className="mt-3 space-y-1.5 rounded-lg border border-neutral-800 bg-neutral-950/60 p-3">
-                  <div className="text-[10px] uppercase tracking-[0.14em] text-neutral-700">离可用还差多少</div>
+                  <div className="text-[10px] uppercase tracking-[0.14em] text-neutral-700">{tr(lang, 'live.gap')}</div>
                   {d.targets.map((t) => (
                     <div key={t.tool} className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5 text-[11.5px]">
                       <span className="w-44 shrink-0 text-neutral-400">{t.tool}</span>
                       {t.supported ? (
-                        <span className="text-emerald-300/90">现在就能用（需要 ≤ {t.max}）</span>
+                        <span className="text-emerald-300/90">{tr(lang, 'live.need', { v: t.max })}</span>
                       ) : (
                         <span className="text-neutral-500">
-                          需要 ≤ <span className="text-neutral-300">{t.max}</span>
-                          {t.gap !== '—' && <span className="ml-1 text-amber-300/80">比上限高 {t.gap}</span>}
+                          {tr(lang, 'live.need', { v: t.max })}
+                          {t.gap !== '—' && <span className="ml-1 text-amber-300/80">{tr(lang, 'live.above', { g: t.gap })}</span>}
                         </span>
                       )}
                     </div>

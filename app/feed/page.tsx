@@ -81,11 +81,11 @@ export default async function Feed({ searchParams }: { searchParams: Promise<Rec
             <input
               name="q"
               defaultValue={sp.q || ''}
-              placeholder="搜索：untether / MIE / 27.0.1 / Dopamine / Chollima"
+              placeholder={t(lang, 'feed.searchHint')}
               className="w-full bg-transparent text-sm text-foreground outline-none placeholder:text-neutral-600"
             />
             <button type="submit" className="shrink-0 rounded-full bg-primary px-3 py-1 text-xs font-medium text-primary-foreground">
-              搜索
+              {lang === 'en' ? 'Search' : '搜索'}
             </button>
           </div>
 
@@ -103,7 +103,7 @@ export default async function Feed({ searchParams }: { searchParams: Promise<Rec
               href={qs('/feed', { cat, src, only: only === 'actionable' ? '' : 'actionable', q: sp.q })}
               className={cn(pill(only === 'actionable'), 'border-emerald-500/25 text-emerald-300 hover:text-emerald-200')}
             >
-              只看可执行
+              {t(lang, 'feed.onlyActionable')}
             </Link>
           </div>
 
@@ -123,7 +123,7 @@ export default async function Feed({ searchParams }: { searchParams: Promise<Rec
         ))}
         {!list.length && (
           <div className="rounded-xl border border-dashed border-border bg-card/30 p-8 text-center text-sm text-neutral-500">
-            没有符合条件的情报。
+            {t(lang, 'feed.empty')}
           </div>
         )}
       </div>

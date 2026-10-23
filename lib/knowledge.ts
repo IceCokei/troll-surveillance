@@ -20,6 +20,7 @@ export const TOOLS: Tool[] = [
     maxVersionBySoc: { A12: '26.0.1', A13: '26.0.1' },
     socs: ['A12', 'A13', 'A14', 'A15', 'A16', 'A17'],
     note: 'rootless、semi-untethered。A12/A13 到 26.0.1；A14-A17 到 17.3.1；A18 及以后无支持',
+    noteEn: 'rootless, semi-untethered. A12/A13 up to 26.0.1; A14-A17 up to 17.3.1; A18 and later unsupported',
     repo: 'opa334/Dopamine',
     url: 'https://github.com/opa334/Dopamine',
   },
@@ -31,6 +32,7 @@ export const TOOLS: Tool[] = [
     socs: ['A8', 'A9', 'A10', 'A11'],
     devices: 'iPhone 6s ~ iPhone X',
     note: 'checkm8 bootROM 漏洞，USB/DFU 引导，重启需重连电脑；rootful/rootless 可选',
+    noteEn: 'checkm8 bootROM bug, USB/DFU boot, needs a computer after every reboot; rootful or rootless',
     repo: 'palera1n/palera1n',
     url: 'https://github.com/palera1n/palera1n',
   },
@@ -41,6 +43,7 @@ export const TOOLS: Tool[] = [
     maxVersion: '17.0',
     socs: ['A12', 'A13', 'A14', 'A15', 'A16', 'A17', 'A18'],
     note: '依赖 CoreTrust 漏洞做永久签名；iOS 27.x 无可用 CoreTrust 缺陷',
+    noteEn: 'permanent signing via the CoreTrust bug; no usable CoreTrust flaw on iOS 27.x',
     repo: 'opa334/TrollStore',
     url: 'https://github.com/opa334/TrollStore',
   },
@@ -57,6 +60,7 @@ export const TOOLS: Tool[] = [
       { socs: ['A14', 'A15', 'A16', 'A17'], min: '16.5', max: '17.3.1' },
     ],
     note: 'OwnGoal Studio 的 roothide 半越狱（基于 Dopamine），public beta；另有 .tipa 供 iOS 17.0 通过 TrollStore 安装；不支持 M 系 iPad',
+    noteEn: 'roothide semi-jailbreak by OwnGoal Studio (based on Dopamine), public beta; also ships a .tipa for iOS 17.0 via TrollStore; M-series iPads unsupported',
     url: 'https://relaxin.owngoal.dev/',
   },
   {
@@ -68,6 +72,7 @@ export const TOOLS: Tool[] = [
     socs: ['A20'],
     devices: 'iPhone 18 Pro (iPhone19,2) 演示',
     note: 'calif.io 私有链：untether + 沙盒逃逸 + 内核漏洞 + MIE 绕过 + WebAssembly tweak runner，未发布',
+    noteEn: 'private calif.io chain: untether + sandbox escape + kernel exploit + MIE bypass + WebAssembly tweak runner, unreleased',
     url: 'https://theapplewiki.com/wiki/Chollima',
   },
   {
@@ -76,6 +81,7 @@ export const TOOLS: Tool[] = [
     public: true,
     socs: [],
     note: '免费开发者证书侧载，7 天续签，最多 3 个 App；非越狱，无 root',
+    noteEn: 'free developer-cert sideloading, re-sign every 7 days, 3 apps max; not a jailbreak, no root',
     url: 'https://altstore.io',
   },
 ];

@@ -44,6 +44,7 @@ export interface Tool {
   socs: string[];
   devices?: string;
   note: string;
+  noteEn?: string;
   repo?: string;
   url?: string;
 }

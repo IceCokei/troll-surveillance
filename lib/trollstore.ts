@@ -6,6 +6,7 @@ export interface TsTool {
   minVersion?: string;
   maxVersion?: string;
   note: string;
+  noteEn?: string;
   url: string;
 }
 
@@ -19,6 +20,7 @@ export const TS_TOOLS: TsTool[] = [
     minVersion: '14.0',
     maxVersion: '17.0',
     note: '本体。CoreTrust 多次签名校验漏洞，装上即可永久签名任意 IPA',
+    noteEn: 'The installer itself. CoreTrust multi-signer validation bug: install once, sign any IPA permanently',
     url: 'https://github.com/opa334/TrollStore',
   },
   {
@@ -29,6 +31,7 @@ export const TS_TOOLS: TsTool[] = [
     minVersion: '14.0',
     maxVersion: '17.0',
     note: '把 dylib/tweak 注入已安装 App（Enigma 的替代），仍需 TrollStore 环境',
+    noteEn: 'Injects dylibs/tweaks into installed apps (an Enigma replacement); still needs TrollStore',
     url: 'https://github.com/Lessica/TrollFools',
   },
   {
@@ -39,6 +42,7 @@ export const TS_TOOLS: TsTool[] = [
     minVersion: '14.0',
     maxVersion: '17.0',
     note: '状态栏实时网速，走 TrollStore 安装',
+    noteEn: 'Live network speed in the status bar, installed via TrollStore',
     url: 'https://github.com/Lessica/TrollSpeed',
   },
   {
@@ -49,6 +53,7 @@ export const TS_TOOLS: TsTool[] = [
     minVersion: '14.0',
     maxVersion: '17.0',
     note: '包管理器 / 源浏览，TrollStore 环境下装插件用',
+    noteEn: 'Package manager / repo browser for installing tweaks inside a TrollStore environment',
     url: 'https://github.com/PureKFD/PureKFD',
   },
   {
@@ -58,6 +63,7 @@ export const TS_TOOLS: TsTool[] = [
     needsTrollStore: false,
     minVersion: '14.0',
     note: '免费证书侧载，7 天续签、最多 3 个 App；不依赖 TrollStore，也没有 root',
+    noteEn: 'Free-cert sideloading, re-sign every 7 days, 3 apps max; no TrollStore and no root',
     url: 'https://github.com/SideStore/SideStore',
   },
   {
@@ -68,6 +74,7 @@ export const TS_TOOLS: TsTool[] = [
     minVersion: '17.0',
     maxVersion: '26.1',
     note: '走 SparseRestore 的免越狱改机（关 Liquid Glass、开 EU、Tap to Wake 等）；官方明确说别在 iOS 27 上用，可能丢数据',
+    noteEn: 'SparseRestore-based tweaks without jailbreak (disable Liquid Glass, EU mode, Tap to Wake); the author explicitly warns against iOS 27 — possible data loss',
     url: 'https://github.com/LeminLimez/Nugget',
   },
 ];

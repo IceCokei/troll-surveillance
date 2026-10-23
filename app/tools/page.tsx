@@ -7,7 +7,7 @@ import { TOOLS } from '@/lib/knowledge';
 import { getMeta, getProfile } from '@/lib/store';
 import { toolSupports } from '@/lib/analyze';
 import { cookies } from 'next/headers';
-import { t } from '@/lib/i18n';
+import { t as tr } from '@/lib/i18n';
 
 export const dynamic = 'force-dynamic';
 
@@ -17,42 +17,42 @@ export default async function Tools() {
   const meta = getMeta();
 
   const verdict = (t: (typeof TOOLS)[number]) => {
-    if (!t.public) return { ok: false, why: '私有链，无公开工具' };
-    if (toolSupports(t, profile)) return { ok: true, why: '可用' };
+    if (!t.public) return { ok: false, why: tr(lang, 'tools.private') };
+    if (toolSupports(t, profile)) return { ok: true, why: tr(lang, 'tools.yes') };
     const ceil = (t.maxVersionBySoc && t.maxVersionBySoc[profile.soc.split(' ')[0]]) || t.maxVersion;
     if (ceil && profile.version.localeCompare(ceil, undefined, { numeric: true }) > 0)
-      return { ok: false, why: '你的 iOS ' + profile.version + ' 超出上限 ' + ceil };
-    if (t.minVersion) return { ok: false, why: '需要至少 ' + t.minVersion };
-    return { ok: false, why: '不支持 ' + profile.soc };
+      return { ok: false, why: tr(lang, 'tools.over', { v: profile.version, c: ceil }) };
+    if (t.minVersion) return { ok: false, why: tr(lang, 'tools.need', { v: t.minVersion }) };
+    return { ok: false, why: tr(lang, 'tools.unsupported', { soc: profile.soc }) };
   };
 
   return (
     <MaxWidthWrapper>
       <AnimationContainer>
         <div className="flex flex-col items-start pt-8">
-          <MagicBadge title="工具矩阵" />
-          <h1 className="mt-6 font-heading text-3xl font-medium md:text-5xl">{t(lang, 'page.tools.title')}</h1>
+          <MagicBadge title={tr(lang, 'nav.tools')} />
+          <h1 className="mt-6 font-heading text-3xl font-medium md:text-5xl">{tr(lang, 'page.tools.title')}</h1>
           <p className="mt-3 max-w-2xl text-sm text-muted-foreground">
-            本机 {profile.name} · {profile.identifier} · {profile.soc} · iOS {profile.version}（{profile.build}）
-            {meta.signing ? ' · 当前签名 ' + (meta.signing.signed.map((s) => s.version).join(', ') || '无') : ''}
+            {tr(lang, 'tools.target', { name: profile.name, id: profile.identifier, soc: profile.soc, v: profile.version, b: profile.build })}
+            {meta.signing ? tr(lang, 'tools.signed', { v: meta.signing.signed.map((s) => s.version).join(', ') || '—' }) : ''}
           </p>
         </div>
       </AnimationContainer>
 
       <div className="mt-6">
-        <ProfileForm initial={profile} />
+        <ProfileForm initial={profile} lang={lang} />
       </div>
 
       <div className="mt-4 overflow-hidden rounded-2xl border border-border bg-card/40">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-border text-[11px] uppercase tracking-[0.14em] text-neutral-600">
-              <th className="px-5 py-3 text-left font-medium">工具</th>
-              <th className="px-5 py-3 text-left font-medium">类型</th>
-              <th className="px-5 py-3 text-left font-medium">版本范围</th>
-              <th className="px-5 py-3 text-left font-medium">SoC</th>
-              <th className="px-5 py-3 text-left font-medium">对本机</th>
-              <th className="px-5 py-3 text-left font-medium">说明</th>
+              <th className="px-5 py-3 text-left font-medium">{tr(lang, 'tools.thTool')}</th>
+              <th className="px-5 py-3 text-left font-medium">{tr(lang, 'tools.thKind')}</th>
+              <th className="px-5 py-3 text-left font-medium">{tr(lang, 'tools.thRange')}</th>
+              <th className="px-5 py-3 text-left font-medium">{tr(lang, 'tools.thSoc')}</th>
+              <th className="px-5 py-3 text-left font-medium">{tr(lang, 'tools.thMine')}</th>
+              <th className="px-5 py-3 text-left font-medium">{tr(lang, 'tools.thNote')}</th>
             </tr>
           </thead>
           <tbody>
@@ -64,7 +64,7 @@ export default async function Tools() {
                     <div className="font-heading text-[13.5px] text-foreground">{t.name}</div>
                     {t.url && (
                       <a href={t.url} target="_blank" rel="noreferrer" className="text-[11px] text-neutral-600 hover:text-violet-300">
-                        官网/仓库
+                        {tr(lang, 'tools.site')}
                       </a>
                     )}
                   </td>
@@ -78,10 +78,10 @@ export default async function Tools() {
                   </td>
                   <td className="px-5 py-4 font-mono text-[11.5px] text-neutral-500">{t.socs.join('/') || '—'}</td>
                   <td className="px-5 py-4">
-                    {v.ok ? <Badge variant="ok">可用</Badge> : <Badge variant="bad">不可用</Badge>}
+                    {v.ok ? <Badge variant="ok">{tr(lang, 'tools.yes')}</Badge> : <Badge variant="bad">{tr(lang, 'tools.no')}</Badge>}
                     <div className="mt-1 text-[11px] text-neutral-600">{v.why}</div>
                   </td>
-                  <td className="max-w-[320px] px-5 py-4 text-[11.5px] leading-relaxed text-neutral-500">{t.note}</td>
+                  <td className="max-w-[320px] px-5 py-4 text-[11.5px] leading-relaxed text-neutral-500">{lang === 'en' && t.noteEn ? t.noteEn : t.note}</td>
                 </tr>
               );
             })}
@@ -91,16 +91,8 @@ export default async function Tools() {
 
       <AnimationContainer delay={0.1}>
         <div className="mt-6 rounded-2xl border border-border bg-card/40 p-6 text-[12.5px] leading-[1.9] text-neutral-400">
-          <div className="mb-2 font-heading text-sm text-foreground">为什么是这张表</div>
-          越狱从来不是「对 iPhone 有效」，而是「对某颗 SoC × 某段 iOS build 有效」。判定必须三段都在：
-          <br />
-          1. 工具<strong className="text-neutral-200">已公开</strong>（私有链对终端用户等于不存在）；
-          <br />
-          2. 你的版本落在工具声明的区间内（超出即无效，且 Apple 停签名后无法降级）；
-          <br />
-          3. SoC 匹配（A11 及更早靠 checkm8 bootROM 漏洞；A12+ 依赖软件漏洞 + PAC/SPTM/MIE 绕过，跨代不通用）。
-          <br />
-          另外注意 rootless / rootful 生态不互通：给 Dopamine 写的 tweak 不能直接放到 palera1n rootful 上。
+          <div className="mb-2 font-heading text-sm text-foreground">{tr(lang, 'tools.whyTitle')}</div>
+          {tr(lang, 'tools.whyBody')}
         </div>
       </AnimationContainer>
     </MaxWidthWrapper>

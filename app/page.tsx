@@ -157,8 +157,6 @@ export default async function Home({ searchParams }: { searchParams: Promise<Rec
                 </div>
               </div>
             </div>
-            <div className="pointer-events-none absolute inset-x-0 -bottom-4 z-40 h-1/2 bg-gradient-to-t from-background" />
-            <div className="pointer-events-none absolute inset-x-0 bottom-0 z-50 h-1/4 bg-gradient-to-t from-background md:-bottom-8" />
           </AnimationContainer>
         </div>
       </MaxWidthWrapper>

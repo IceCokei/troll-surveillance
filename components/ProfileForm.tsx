@@ -3,9 +3,10 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Save } from 'lucide-react';
 import type { Profile } from '@/lib/types';
+import { t as tr, type Lang } from '@/lib/i18n';
 import { Button } from '@/components/ui/button';
 
-export default function ProfileForm({ initial }: { initial: Profile }) {
+export default function ProfileForm({ initial, lang = 'zh' }: { initial: Profile; lang?: Lang }) {
   const [p, setP] = useState<Profile>(initial);
   const [msg, setMsg] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -48,16 +49,16 @@ export default function ProfileForm({ initial }: { initial: Profile }) {
         {msg && <span className="text-[11px] text-neutral-500">{msg}</span>}
       </div>
       <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
-        {field('name', '机型名', 'iPhone 15 Pro')}
-        {field('identifier', '机型标识', 'iPhone16,1')}
-        {field('version', 'iOS 版本', '27.0.1')}
-        {field('build', 'Build', '21E236')}
-        {field('soc', 'SoC', 'A17 Pro (t8130)')}
+        {field('name', tr(lang, 'profile.name'), 'iPhone 15 Pro')}
+        {field('identifier', tr(lang, 'profile.id'), 'iPhone16,1')}
+        {field('version', tr(lang, 'profile.version'), '17.3.1')}
+        {field('build', tr(lang, 'profile.build'), '21E236')}
+        {field('soc', tr(lang, 'profile.soc'), 'A17 Pro (t8130)')}
       </div>
       <div className="mt-4 flex items-center gap-3">
         <Button variant="purple" size="sm" onClick={save} disabled={busy}>
           <Save className="mr-1.5 size-3.5" />
-          {busy ? '保存中…' : '保存并重算'}
+          {busy ? '…' : tr(lang, 'profile.save')}
         </Button>
       </div>
     </div>
