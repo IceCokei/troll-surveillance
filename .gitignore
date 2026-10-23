@@ -16,3 +16,6 @@ data/xposts-cache.json
 
 # macOS
 .DS_Store
+
+# release artifacts
+dist/
