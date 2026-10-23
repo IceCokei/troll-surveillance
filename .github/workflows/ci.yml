@@ -44,6 +44,13 @@ jobs:
           done
           echo "ok"
 
+      - name: Release notes format
+        run: |
+          for f in docs/releases/v*.md; do
+            [ -f "$f" ] || continue
+            ./scripts/check-release-notes.sh "$f"
+          done
+
       - name: Markdown lint
         uses: DavidAnson/markdownlint-cli2-action@v16
         with:

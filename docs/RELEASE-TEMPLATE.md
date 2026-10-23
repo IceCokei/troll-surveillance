@@ -61,3 +61,12 @@
 | Features | 🚀 |
 | Breaking | ⚠️ |
 | First release | 🌱 |
+
+## Automatic validation
+
+```bash
+./scripts/new-release.sh 0.2.2
+./scripts/check-release-notes.sh docs/releases/v0.2.2.md
+```
+
+Checks: three section headings, numbered list under New, no emoji on bullets, no install commands, Chinese inside details, closing link to README. CI and the release workflow run the same script.

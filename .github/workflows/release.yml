@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: 'Tag to publish (e.g. v0.2.1)'
+        description: 'Tag to publish (e.g. v0.2.2)'
         required: true
 
 permissions:
@@ -45,15 +45,12 @@ jobs:
           ( cd dist && shasum -a 256 "troll-surveillance-$V.tar.gz" > "troll-surveillance-$V.tar.gz.sha256" )
           ls -lh dist
 
-      - name: Guard release notes
+      - name: Check release notes format
         run: |
           V="${{ steps.meta.outputs.version }}"
           NOTES="docs/releases/v$V.md"
           if [ -f "$NOTES" ]; then
-            if grep -qE '^(curl|tar|npm install|npm ci|\./install\.sh)' "$NOTES"; then
-              echo "::error::Release notes must not contain install commands (move them to README)"
-              exit 1
-            fi
+            ./scripts/check-release-notes.sh "$NOTES"
             echo "notes_file=$NOTES" >> "$GITHUB_ENV"
           else
             echo "::warning::No docs/releases/v$V.md found, falling back to auto-generated notes"
