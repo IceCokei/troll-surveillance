@@ -133,6 +133,16 @@ docs/           研究文档与截图
 
 Troll Surveillance 是**信息项目**，不分发漏洞利用、修改版固件或越狱工具。设备判定仅供参考，依据是各工具作者自己的公开声明。把设备冻结在旧系统意味着放弃安全更新，这个取舍由你承担。使用风险自负；与 Apple、Calif.io 或任何工具厂商无关。
 
+## Star History
+
+<a href="https://www.star-history.com/?repos=icecokei%2Ftroll-surveillance.git&type=timeline&legend=bottom-right">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=icecokei/troll-surveillance.git&type=timeline&theme=dark&legend=bottom-right" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=icecokei/troll-surveillance.git&type=timeline&legend=bottom-right" />
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=icecokei/troll-surveillance.git&type=timeline&legend=bottom-right" />
+ </picture>
+</a>
+
 ## 许可证
 
 MIT —— 见 [LICENSE](LICENSE)。

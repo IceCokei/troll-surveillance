@@ -133,6 +133,16 @@ docs/           research docs and screenshots
 
 Troll Surveillance is an **information project**. It does not ship exploits, patched IPSWs, or jailbreak tooling. Device verdicts are advisory and derived from public statements by the tools' own authors. Freezing a device on an old iOS build means forgoing security fixes — that trade-off is yours. Use at your own risk; not affiliated with Apple, Calif.io, or any tool vendor.
 
+## Star History
+
+<a href="https://www.star-history.com/?repos=icecokei%2Ftroll-surveillance.git&type=timeline&legend=bottom-right">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=icecokei/troll-surveillance.git&type=timeline&theme=dark&legend=bottom-right" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=icecokei/troll-surveillance.git&type=timeline&legend=bottom-right" />
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=icecokei/troll-surveillance.git&type=timeline&legend=bottom-right" />
+ </picture>
+</a>
+
 ## License
 
 MIT — see [LICENSE](LICENSE).
