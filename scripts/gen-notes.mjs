@@ -59,13 +59,13 @@ if (!buckets.new.length && !buckets.fix.length && !buckets.feat.length) {
   buckets.new = rawSubjects.slice(0, 8).map((x) => '**' + x + '**');
 }
 
-const pick = (arr, fallback) => (arr.length ? arr : [fallback]);
+const pick = (arr) => (arr.length ? arr : ['—']);
 
-const newItems = pick(buckets.new, 'Chores and internal cleanups.');
-const fixItems = pick(buckets.fix, 'No user-facing fixes in this release.');
-const featItems = pick(buckets.feat, 'No feature-level changes in this release.');
+const newItems = pick(buckets.new);
+const fixItems = pick(buckets.fix);
+const featItems = pick(buckets.feat);
 
-const numbered = (arr) => arr.map((t, i) => `${i + 1}. ${t}`).join('\n');
+const numbered = (arr) => (arr.length === 1 && arr[0] === '—' ? '—' : arr.map((t, i) => `${i + 1}. ${t}`).join('\n'));
 const bulleted = (arr) => arr.map((t) => `- ${t}`).join('\n');
 
 const out = `## ✨ New
