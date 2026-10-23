@@ -52,11 +52,3 @@ jobs:
             README.zh-CN.md
             CONTRIBUTING.md
             docs/**/*.md
-          config: |
-            {
-              "MD013": false,
-              "MD033": false,
-              "MD041": false,
-              "MD024": false,
-              "MD040": false
-            }
