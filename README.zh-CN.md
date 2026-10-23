@@ -5,7 +5,7 @@
 > 自托管的 iOS 越狱 / TrollStore 情报台。
 > 只回答一个问题：**这东西，现在到底能不能用在*我*的设备上？**
 
-![首页](docs/screenshots/skin-home.png)
+![首页](docs/screenshots/zh/home.jpg)
 
 ---
 
@@ -37,7 +37,7 @@
 - 当前版本已停签名时给出**还原警告**（一 DFU 就会被强制升级）
 - 未连接时终端窗口保留，只隐藏设备行
 
-![设备](docs/screenshots/skin-devices.png)
+![设备](docs/screenshots/zh/devices.jpg)
 
 ### 简报
 - 每日 markdown 归档（`data/digests/YYYY-MM-DD.md`），**每轮同步都重写**
@@ -45,7 +45,7 @@
 - 结构：一句话结论 → 可执行 → 漏洞 → 工具发版 → **近 24 小时最新动态（纯时间序）** → 作者动态 → 版本签名 → 骗局 → 工具矩阵 → 采集健康度
 - 全部时间以东八区显示，条目严格新在上
 
-![简报](docs/screenshots/skin-digest-terminal.png)
+![简报](docs/screenshots/zh/digest.jpg)
 
 ### 研究资料
 - `docs/x-sources.md` —— 27 个账号 / 102 条贴文，含日期、是否含视频、**可直接打开的 `status/<id>` 直链**
@@ -140,7 +140,7 @@ Troll Surveillance 是**信息项目**，不分发漏洞利用、修改版固件
 - **展示** — `/exploits` 列出声明支持 / 构建方式 / 最后提交；`/devices` 显示每台设备被哪些公开利用覆盖
 - **只做静态分析** — 不执行任何利用代码。公开 PoC ≠ 可用越狱：还缺沙盒逃逸、PAC/SPTM/MIE 绕过、签名绕过与启动持久化
 
-![公开利用代码](docs/screenshots/skin-exploits.png)
+![公开利用代码](docs/screenshots/zh/exploits.jpg)
 
 ## Star History
 

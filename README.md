@@ -5,7 +5,7 @@
 > A self-hosted intelligence desk for the iOS jailbreak / TrollStore ecosystem.
 > It answers one question: **is this thing actually usable on *my* device, right now?**
 
-![Home](docs/screenshots/skin-home.png)
+![Home](docs/screenshots/en/home.jpg)
 
 ---
 
@@ -37,7 +37,7 @@ Jailbreak news is noisy and almost always untethered from reality. A tool "suppo
 - **Restore warning** when the running build is no longer signed (a DFU would force-update the device)
 - Works with the device disconnected: the terminal frame stays, only the device rows hide
 
-![Devices](docs/screenshots/skin-devices.png)
+![Devices](docs/screenshots/en/devices.jpg)
 
 ### Interface
 
@@ -45,7 +45,7 @@ Jailbreak news is noisy and almost always untethered from reality. A tool "suppo
 - **Light + dark theme** — ☀ / ☾ toggle, `?theme=light` deep link, semantic tokens plus remapped neutrals
 - **Redact mode** — `?redact=1` masks UDID tail, model number and region so screenshots are safe to publish
 
-![Light theme](docs/screenshots/skin-light-en.png)
+![Light theme](docs/screenshots/en/light.jpg)
 
 ### Digest
 - Daily markdown archive (`data/digests/YYYY-MM-DD.md`) **rewritten on every sync**
@@ -53,7 +53,7 @@ Jailbreak news is noisy and almost always untethered from reality. A tool "suppo
 - Sections: verdict → actionable → exploits → tool releases → **latest 24h (pure time order)** → authors → signing → scams → tool matrix → source health
 - All timestamps in **Asia/Shanghai**, item ordering strictly newest-first
 
-![Digest](docs/screenshots/skin-digest-terminal.png)
+![Digest](docs/screenshots/en/digest.jpg)
 
 ### Research assets
 - `docs/x-sources.md` — 27 accounts / 102 posts with date, video flag and **direct `status/<id>` links**
@@ -148,7 +148,7 @@ Troll Surveillance is an **information project**. It does not ship exploits, pat
 - **Surfacing** — `/exploits` lists declared support, build system and last commit; `/devices` shows which public exploits cover each connected device
 - **Static only** — nothing is executed. A public PoC is not a usable jailbreak: you still need a sandbox escape, PAC/SPTM/MIE bypass, code-signing bypass and boot persistence
 
-![Exploit tracking](docs/screenshots/skin-exploits.png)
+![Exploit tracking](docs/screenshots/en/exploits.jpg)
 
 ## Star History
 
