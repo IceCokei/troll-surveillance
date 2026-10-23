@@ -45,7 +45,7 @@ export default function ProfileForm({ initial, lang = 'zh' }: { initial: Profile
   return (
     <div className="rounded-2xl border border-border bg-card/50 p-5">
       <div className="flex items-center justify-between gap-3">
-        <div className="text-[11px] uppercase tracking-[0.14em] text-neutral-600">设备档案 · 改这里切换判定目标</div>
+        <div className="text-[11px] uppercase tracking-[0.14em] text-neutral-600">{tr(lang, 'profile.title')}</div>
         {msg && <span className="text-[11px] text-neutral-500">{msg}</span>}
       </div>
       <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
