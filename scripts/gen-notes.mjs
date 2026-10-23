@@ -53,6 +53,12 @@ for (const subject of raw.split('\n').filter(Boolean)) {
   buckets[bucket].push(label.replace(/\.$/, ''));
 }
 
+// 兜底：如果全是 chore/ci/docs，就把原始提交标题列进 New，避免正文空掉
+let rawSubjects = raw.split(String.fromCharCode(10)).filter((x) => x && !x.startsWith('chore(release)'));
+if (!buckets.new.length && !buckets.fix.length && !buckets.feat.length) {
+  buckets.new = rawSubjects.slice(0, 8).map((x) => '**' + x + '**');
+}
+
 const pick = (arr, fallback) => (arr.length ? arr : [fallback]);
 
 const newItems = pick(buckets.new, 'Chores and internal cleanups.');
