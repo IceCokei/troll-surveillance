@@ -162,6 +162,12 @@ export function analyze(raw: RawItem, profile: Profile): Item {
     score += 4;
     evidence.push('GitHub commit(+4)');
   }
+  if (raw.source === 'apple:releases') {
+    // 官方平台推送：不进 exploit/signing 判定，单独一类
+    if (category === 'news') category = 'os-release';
+    score += 10;
+    evidence.push('Apple 平台推送(+10)');
+  }
   if (raw.kind === 'ipsw') category = 'signing';
   if (raw.kind === 'wiki' || raw.kind === 'ipsw') tags.add('state');
 
@@ -198,6 +204,19 @@ export function analyze(raw: RawItem, profile: Profile): Item {
       actionable = relevance !== 'obsolete';
     } else if (relevance === 'direct') {
       actionNote = '你当前版本仍在签名窗口，出问题可 DFU 还原';
+    }
+  } else if (category === 'os-release') {
+    const isDeviceOs = /^(iOS|iPadOS)\s/.test(raw.title);
+    if (!isDeviceOs) {
+      actionNote = '其他平台版本推送：仅记录，与你的设备无关';
+    } else if (relevance === 'direct') {
+      actionNote = '与你当前系统同一版本线：要更新直接 OTA，不要用第三方描述文件';
+    } else if (relevance === 'future') {
+      actionNote = '比你当前系统更高：升级会改动越狱 / TrollStore 态势，先看工具矩阵再决定';
+    } else if (relevance === 'obsolete') {
+      actionNote = '低于你当前版本：只对需要降级且签名仍开的人有意义';
+    } else {
+      actionNote = '平台版本推送：仅记录，按需在设备上 OTA';
     }
   } else if (category === 'scam') {
     actionNote = '骗局模式：不要安装描述文件 / 不要输入 Apple ID';

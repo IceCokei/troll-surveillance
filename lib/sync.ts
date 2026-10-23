@@ -1,5 +1,5 @@
 import { analyze } from './analyze';
-import { collectAppleSecurity } from './collect/apple';
+import { collectAppleReleases, collectAppleSecurity } from './collect/apple';
 import { collectGithubCommits, collectGithubReleases } from './collect/github';
 import { collectGithubAtom } from './collect/ghatom';
 import { collectRelaxin } from './collect/relaxin';
@@ -176,6 +176,16 @@ export async function runSync(opts: { force?: boolean } = {}): Promise<SyncResul
   } catch (e: any) {
     errors.push({ source: 'apple:security', message: String(e?.message || e) });
     mark('apple:security', false, 0, String(e?.message || e));
+  }
+
+  // ---- Apple 平台版本推送（developer.apple.com releases RSS）
+  try {
+    const items = await collectAppleReleases();
+    raw.push(...items);
+    mark('apple:releases', true, items.length);
+  } catch (e: any) {
+    errors.push({ source: 'apple:releases', message: String(e?.message || e) });
+    mark('apple:releases', false, 0, String(e?.message || e));
   }
 
   // ---- 分析与入库

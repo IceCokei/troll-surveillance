@@ -1,5 +1,6 @@
 import { fetchText } from './http';
 import type { RawItem } from '../types';
+import { APPLE_RELEASES_URL, getOsVersions, latestPerPlatform, latestPush } from '../osversions';
 
 /** Apple 安全更新页：抓取 iOS/iPadOS 相关条目 */
 export async function collectAppleSecurity(): Promise<RawItem[]> {
@@ -27,4 +28,22 @@ export async function collectAppleSecurity(): Promise<RawItem[]> {
     if (items.length >= 12) break;
   }
   return items;
+}
+/**
+ * Apple 平台版本推送（官方 releases RSS）
+ * 只把「最近一次多平台推送」写成情报，避免每轮把 40 多条历史版本倒进时间线。
+ */
+export async function collectAppleReleases(): Promise<RawItem[]> {
+  const snap = await getOsVersions({ maxAgeMs: 60_000 });
+  const push = latestPush(snap.releases);
+  const list = push && push.items.length > 1 ? push.items : latestPerPlatform(snap.releases);
+  return list.map((r) => ({
+    kind: 'apple' as const,
+    source: 'apple:releases',
+    author: 'Apple',
+    title: r.platform + ' ' + r.version + (r.label ? ' ' + r.label : '') + ' (' + r.build + ')',
+    text: 'Apple push: ' + r.platform + ' ' + r.version + ' build ' + r.build + ' (' + r.channel + ')',
+    url: r.url || APPLE_RELEASES_URL,
+    publishedAt: r.publishedAt,
+  }));
 }

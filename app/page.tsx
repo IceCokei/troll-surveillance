@@ -1,7 +1,8 @@
 import Link from 'next/link';
-import { cookies } from 'next/headers';
 import { ArrowRight, Fingerprint, ShieldCheck, Smartphone, Tablet, Terminal } from 'lucide-react';
 import { getMeta, getProfile, today } from '@/lib/store';
+import { getOsVersions, latestPush, latestRows } from '@/lib/osversions';
+import { getLang } from '@/lib/lang';
 import { getVisibleItems } from '@/lib/items';
 import { byStateThenTime, isThisYear, withinYears } from '@/lib/fresh';
 import { dedupeByTool } from '@/lib/dedupe';
@@ -18,20 +19,34 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import ItemCard from '@/components/site/item-card';
 import SyncButton from '@/components/SyncButton';
+import OsPushPanel from '@/components/site/os-push';
 
 export const dynamic = 'force-dynamic';
 
 export default async function Home({ searchParams }: { searchParams: Promise<Record<string, string | undefined>> }) {
   const sp = await searchParams;
   const redact = sp.redact === '1';
-  const jar = await cookies();
-  const lang = jar.get('lang')?.value === 'en' ? 'en' : 'zh';
+  const lang = await getLang();
   const profile = getProfile();
   const meta = getMeta();
   const items = getVisibleItems();
   const rawDevices = await listDevices();
   const devices = redact ? rawDevices.map(maskDevice) : rawDevices;
   const d = today();
+  const osSnap = await getOsVersions();
+  const osPush = latestPush(osSnap.releases);
+  const osRows = latestRows(osSnap.releases, osPush);
+  // 红act 模式下不下发版本号，避免公开截图泄漏本机系统版本
+  const deviceVersions: Record<string, string> = {};
+  if (!redact) {
+    for (const dev of rawDevices) {
+      const key = dev.kind === 'iPad' ? 'iPadOS' : 'iOS';
+      if (!deviceVersions[key]) deviceVersions[key] = dev.version;
+    }
+    // 没插设备时退回判定档案（profile），否则对比列永远是空的
+    const pk = profile.identifier.startsWith('iPad') ? 'iPadOS' : 'iOS';
+    if (!deviceVersions[pk]) deviceVersions[pk] = profile.version;
+  }
 
   const dayItems = items.filter((i) => localDate(i.fetchedAt) === d);
   const timeSorted = dedupeByTool([...dayItems].sort(byStateThenTime)).items;
@@ -177,6 +192,20 @@ export default async function Home({ searchParams }: { searchParams: Promise<Rec
 
       <MaxWidthWrapper className="pt-16">
         <AnimationContainer>
+          <OsPushPanel
+            lang={lang}
+            push={osPush}
+            rows={osRows}
+            deviceVersions={deviceVersions}
+            fetchedAt={osSnap.fetchedAt}
+            ok={osSnap.ok}
+            error={osSnap.error}
+          />
+        </AnimationContainer>
+      </MaxWidthWrapper>
+
+      <MaxWidthWrapper className="pt-16">
+        <AnimationContainer>
           <div className="flex flex-col items-start">
             <MagicBadge title={t(lang, 'home.act.title')} />
             <h2 className="mt-6 font-heading text-2xl font-medium leading-[1.15] md:text-4xl">
@@ -184,7 +213,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<Rec
             </h2>
             <p className="mt-3 max-w-2xl text-sm text-muted-foreground md:text-base">
               {actionable.length > 0
-                ? '以下条目同时满足：工具已公开、版本在支持区间、SoC 匹配。'
+                ? t(lang, 'home.act.hasSub')
                 : t(lang, 'home.act.noneSub')}
             </p>
           </div>

@@ -14,6 +14,11 @@ const RULES: [RegExp, (m: RegExpMatchArray) => string][] = [
   [/^你当前版本仍在签名窗口，出问题可 DFU 还原$/, () => 'your build is still signed; a DFU restore is possible if something breaks'],
   [/^骗局模式：不要安装描述文件 \/ 不要输入 Apple ID$/, () => 'scam pattern: do not install a profile, do not enter your Apple ID'],
   [/^讨论版本低于你的系统且早已停签名，不可用$/, () => 'discusses a build below yours, long unsigned; unusable'],
+  [/^比你当前系统更高：升级会改动越狱 \/ TrollStore 态势，先看工具矩阵再决定$/, () => 'newer than your build: updating changes your jailbreak / TrollStore posture — check the tool matrix first'],
+  [/^与你当前系统同一版本线：要更新直接 OTA，不要用第三方描述文件$/, () => 'same line as your build: update over the air, never through a third-party profile'],
+  [/^低于你当前版本：只对需要降级且签名仍开的人有意义$/, () => 'older than your build: only useful while it is still signed and you want to downgrade'],
+  [/^平台版本推送：仅记录，按需在设备上 OTA$/, () => 'platform release: record only, OTA when you actually want it'],
+  [/^其他平台版本推送：仅记录，与你的设备无关$/, () => 'other-platform release: record only, unrelated to your device'],
   [/^仅情报价值：记录，不构成动作$/, () => 'intel only — record, no action'],
 ];
 
