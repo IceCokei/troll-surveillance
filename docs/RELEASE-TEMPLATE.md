@@ -1,56 +1,63 @@
-# 发版说明模板（Release Notes Template）
+# Release notes template
 
-> 用法：复制本文件到 `docs/releases/vX.Y.Z.md`，按分节填写，然后
-> ```bash
-> ./scripts/release.sh vX.Y.Z docs/releases/vX.Y.Z.md
-> ```
-> **安装命令不要写进 Release 正文**——统一放在 README 的 Quick start，正文末尾只留一句指向 README。
-
----
-
-## ✨ 新增
-
-- 🧭 **一句话说明**：做了什么，解决什么问题（能给出路径/命令更好，例如 `/exploits`、`?redact=1`）
-- 🌍 **一句话说明**：同上
-
-## 🐛 修复
-
-- 🔁 **现象**：原来错在哪 → 现在怎样（一句话讲清因果）
-- 🧮 **现象**：同上
-
-## 🚀 功能
-
-- 📊 **能力名**：这项能力覆盖什么范围、边界在哪
-- ⏱️ **能力名**：同上
-
-## ⚠️ 破坏性变更（没有就删掉这一节）
-
-- 💥 **变了什么**：旧行为 → 新行为，需要用户做什么
-
-> 安装方式与使用说明见 [README](../../README.md#quick-start)。
+> Copy to `docs/releases/vX.Y.Z.md`, fill in, then
+> `./scripts/release.sh vX.Y.Z docs/releases/vX.Y.Z.md`
+>
+> **Never put install commands in the release body** — they live in the README Quick start. End with a single link.
 
 ---
 
-## 写作规范
+## Style rules
 
-| 规则 | 说明 |
+| Rule | Detail |
 | --- | --- |
-| 分节固定 | `✨ 新增` / `🐛 修复` / `🚀 功能` / `⚠️ 破坏性变更`（可选）；首个版本用 `🌱 首个版本` |
-| emoji 密度 | **分节标题 1 个 + 每条要点开头 1 个**，不要句中再堆 |
-| 一条一句 | 每条只说一件事，格式：`**短标题**：说明` |
-| 动词开头 | 「新增 / 修复 / 合并 / 支持 / 移除」，避免「优化了一下」这类模糊表述 |
-| 可验证 | 尽量带路径、API、参数（`/devices`、`?lang=en`、`/api/watch`） |
-| 不写安装 | 安装/升级步骤只放 README，正文末尾一句链接即可 |
-| 长度 | 一个版本 6–12 条，超过说明该拆分版本了 |
+| Emoji | **Section headings only** (✨ / 🐛 / 🚀 / ⚠️ / 🌱). No emoji on individual bullets. |
+| Lists | Numbered list for `New` (1, 2, 3…), bullets for `Fixes` and `Features`. |
+| One line each | `**Thing** — what it does / what it fixes.` No second paragraph. |
+| No duplicates | If it appears in `New`, do not repeat it in `Features`. |
+| Length | 5–8 items per section. More than that means split the release. |
+| Verify | Include paths, API routes or query params (`/devices`, `?lang=en`, `/api/watch`). |
+| Language | English first (default on GitHub), Chinese inside a `<details>` block. |
 
-## emoji 语义表（保持稳定，别每次换）
+## Skeleton
 
-| 分节 | 图标 |
+```markdown
+## ✨ New
+
+1. **Feature name** — what it does, why it matters (`/path` or `?param=1`).
+2. **Feature name** — one line.
+
+## 🐛 Fixes
+
+- **Symptom** — cause, now fixed.
+- **Symptom** — one line.
+
+## 🚀 Features
+
+- **Capability** — scope and boundaries.
+- **Capability** — one line.
+
+<details>
+<summary>中文说明</summary>
+
+### ✨ 新增
+1. **功能名**：一句说明（带路径/参数）。
+### 🐛 修复
+- **现象**：原因 → 现在。
+### 🚀 功能
+- **能力**：范围与边界。
+
+</details>
+
+> Installation and usage: see the [README](https://github.com/IceCokei/troll-surveillance#quick-start).
+```
+
+## Emoji map (keep stable)
+
+| Section | Icon |
 | --- | --- |
-| 新增 | ✨ |
-| 修复 | 🐛 |
-| 功能 | 🚀 |
-| 破坏性变更 | ⚠️ |
-| 首个版本 | 🌱 |
-| 文档 | 📝 |
-| 依赖 / 构建 | 🧰 |
+| New | ✨ |
+| Fixes | 🐛 |
+| Features | 🚀 |
+| Breaking | ⚠️ |
+| First release | 🌱 |
