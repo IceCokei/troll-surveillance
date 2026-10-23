@@ -23,6 +23,16 @@
 - **ipsw.me** —— 按机型标识实时查询签名窗口
 - **Apple 安全公告** 与 **Relaxin**（直接解析它的 SPA bundle —— 该项目没有公开仓库）
 
+### Apple 平台推送
+- 直读 `developer.apple.com/news/releases/rss/releases.rss` —— 就是 Apple 自己发布的那个源，中间没有镜像站
+- 共用同一个 pubDate 的条目合并成**一次推送**，看到的是「Apple 一次推了 7 个版本」，而不是七条互不相干的记录
+- 每个平台（Xcode、iOS、iPadOS、macOS、tvOS、visionOS、watchOS）给出版本、Build 与渠道（RC / Beta / 正式版），并标出**新版本 / 旧版本**；新版本还会写明从哪一版升上来
+- 每行都和当前连接的设备（或保存的判定档案）对比：`你的 27.0.1 · 低于推送`
+- 2 分钟缓存，且每轮 600 秒同步都会回源，官方一发就会自己更新
+- `/api/os` 对外暴露同样的行数据、推送历史与新/旧标记
+
+![Apple 平台推送](docs/screenshots/zh/apple-push.jpg)
+
 ### 判定引擎
 - 关键词加权（untether、0day、MIE/PAC/SPTM、内核、CoreTrust…）并保留证据链
 - **版本抽取 + SoC 匹配**：每条情报相对你的设备判定为 `direct` / `future` / `obsolete`
@@ -38,6 +48,13 @@
 - 未连接时终端窗口保留，只隐藏设备行
 
 ![设备](docs/screenshots/zh/devices.jpg)
+
+### 界面
+- **双语** —— 导航栏 EN / 中 切换，写进 cookie，支持 `?lang=en` 直链；在服务端解析，不会先闪一下再变
+- **亮色 + 暗色** —— ☀ / ☾ 切换，`?theme=light` 直链；语义 token 加中性色重映射
+- **脱敏模式** —— `?redact=1` 遮蔽 UDID 尾号、型号与地区，截图可安全公开
+
+![亮色主题](docs/screenshots/zh/light.jpg)
 
 ### 简报
 - 每日 markdown 归档（`data/digests/YYYY-MM-DD.md`），**每轮同步都重写**
@@ -97,6 +114,7 @@ WATCH_MS=300000 ./start.sh  # 改成 5 分钟
 | 固件签名 | `lib/collect/ipsw.ts` | 按机型标识取签名列表 |
 | Apple 安全公告 | `lib/collect/apple.ts` | 公告标题 |
 | Relaxin | `lib/collect/relaxin.ts` | 从站点 bundle 解析版本与支持矩阵 |
+| Apple 平台版本 | `lib/osversions.ts`、`lib/collect/apple.ts` | 官方 developer releases RSS；同时间戳条目合并为一次推送 |
 
 ## API
 
@@ -108,6 +126,7 @@ WATCH_MS=300000 ./start.sh  # 改成 5 分钟
 | GET | `/api/digest?date=` | markdown 简报 |
 | GET | `/api/watch` | 抓取器状态（间隔、上次/下次、错误） |
 | GET | `/api/health` | 同步健康度与签名快照 |
+| GET | `/api/os[?force=1]` | 平台版本、推送历史、新/旧标记 |
 | GET/POST | `/api/profile` | 读取/修改判定目标 |
 
 ## 目录结构
@@ -115,7 +134,7 @@ WATCH_MS=300000 ./start.sh  # 改成 5 分钟
 ```
 app/            页面与 API
 components/     UI（Linkify 皮肤、实时设备、简报渲染）
-lib/            analyze / digest / sync / devices / trollstore / fresh / dedupe / xfilter
+lib/            analyze / digest / sync / devices / trollstore / osversions / fresh / dedupe / xfilter
 lib/collect/    各数据源适配器
 scripts/        sync、watch、reanalyze、device、dossier、purge-x
 data/           运行时状态（已 gitignore）：items、meta、digests、设备快照

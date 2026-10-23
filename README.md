@@ -23,6 +23,16 @@ Jailbreak news is noisy and almost always untethered from reality. A tool "suppo
 - **ipsw.me** — live signing window per device identifier
 - **Apple security releases** and **Relaxin** (parsed straight out of the SPA bundle — the project has no public repo)
 
+### Apple platform push
+- Reads `developer.apple.com/news/releases/rss/releases.rss` directly — the feed Apple itself publishes, no mirror in between
+- Items that share one pubDate are grouped into **one push**, so the page says "Apple shipped 7 builds" instead of showing seven unrelated rows
+- Every platform (Xcode, iOS, iPadOS, macOS, tvOS, visionOS, watchOS) gets version, build and channel (RC / Beta / release), plus a **new vs unchanged** marker; new rows also say what they upgraded from
+- Each row is compared against your connected device or the saved profile — `yours 27.0.1 · behind the push`
+- Refetched every 2 minutes, and on every 600s sync, so an official release lands on its own
+- `/api/os` exposes the same rows, the push history and the new/old flags
+
+![Apple platform push](docs/screenshots/en/apple-push.jpg)
+
 ### Judgement engine
 - Keyword scoring (untether, 0day, MIE/PAC/SPTM, kernel, CoreTrust, …) with weights and evidence trails
 - **Version extraction + SoC matching** — every item is classified `direct` / `future` / `obsolete` against your device
@@ -105,6 +115,7 @@ The tool registry lives in `lib/knowledge.ts`; device-side TrollStore tooling li
 | Firmware signing | `lib/collect/ipsw.ts` | per-identifier signed list |
 | Apple security | `lib/collect/apple.ts` | advisory titles |
 | Relaxin | `lib/collect/relaxin.ts` | version + support matrix parsed from the site bundle |
+| Apple platform releases | `lib/osversions.ts`, `lib/collect/apple.ts` | official developer releases RSS; same-timestamp items collapse into one push |
 
 ## API
 
@@ -116,6 +127,7 @@ The tool registry lives in `lib/knowledge.ts`; device-side TrollStore tooling li
 | GET | `/api/digest?date=` | markdown digest |
 | GET | `/api/watch` | watcher state (interval, last/next run, errors) |
 | GET | `/api/health` | sync health and signing snapshot |
+| GET | `/api/os[?force=1]` | platform versions, push history, new/old flags |
 | GET/POST | `/api/profile` | read/update the judgement target |
 
 ## Project layout
@@ -123,7 +135,7 @@ The tool registry lives in `lib/knowledge.ts`; device-side TrollStore tooling li
 ```
 app/            pages + API routes
 components/     UI (Linkify skin, live devices, digest renderer)
-lib/            analyze, digest, sync, devices, trollstore, fresh, dedupe, xfilter
+lib/            analyze, digest, sync, devices, trollstore, osversions, fresh, dedupe, xfilter
 lib/collect/    source adapters
 scripts/        sync, watch, reanalyze, device, dossier, purge-x
 data/           runtime state (git-ignored): items, meta, digests, device snapshots

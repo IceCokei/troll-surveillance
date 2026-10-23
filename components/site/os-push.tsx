@@ -126,7 +126,7 @@ export default function OsPushPanel({
   const fresh = push ? Date.now() - new Date(push.at).getTime() < 36 * 3600 * 1000 : false;
 
   return (
-    <section>
+    <section id="apple-push" className="scroll-mt-24">
       <div className="flex flex-col items-start justify-between gap-5 md:flex-row md:items-end">
         <div>
           <MagicBadge title={t(lang, 'home.os.badge')} />
