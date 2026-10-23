@@ -42,7 +42,8 @@ jobs:
           NEW=$(node -e "const v=String('$V').split('.').map(Number); v[2]++; console.log(v.join('.'))")
           node -e "const fs=require('fs');const p=JSON.parse(fs.readFileSync('package.json'));p.version='$NEW';fs.writeFileSync('package.json',JSON.stringify(p,null,2)+'\n')"
           npm install --package-lock-only --no-audit --no-fund >/dev/null 2>&1 || true
-          git add package.json package-lock.json
+          node scripts/gen-notes.mjs "$NEW"
+          git add package.json package-lock.json docs/releases
           git commit -m "chore(release): v$NEW"
           git push origin HEAD:main
           echo "bumped $V -> $NEW"
