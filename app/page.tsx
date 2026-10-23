@@ -242,7 +242,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<Rec
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border text-[11px] uppercase tracking-[0.14em] text-neutral-600">
-                  <th className="px-5 py-3 text-left font-medium">源</th>
+                  <th className="px-5 py-3 text-left font-medium">{lang === 'en' ? 'source' : '源'}</th>
                   <th className="px-5 py-3 text-left font-medium">状态</th>
                   <th className="px-5 py-3 text-left font-medium">条数</th>
                   <th className="px-5 py-3 text-left font-medium">时间</th>
