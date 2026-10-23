@@ -48,7 +48,7 @@ export async function runSync(opts: { force?: boolean } = {}): Promise<SyncResul
 
   for (const handle of X_HANDLES) {
     if (!xBatch.includes(handle)) {
-      mark('x:@' + handle, true, 0, 'queued (轮换中)');
+      mark('x:@' + handle, true, 0, 'queued (rotating)');
       continue;
     }
     try {

@@ -68,7 +68,11 @@ const ROLE_EN: Record<string, string> = {
 };
 
 export function roleEn(handle: string, fallback: string): string {
-  return ROLE_EN[handle.replace(/^x:/, '')] || fallback;
+  const mapped = ROLE_EN[handle.replace(/^x:/, '')];
+  if (mapped) return mapped;
+  const text = roleTextEn(fallback);
+  if (!/[\u4e00-\u9fff]/.test(text)) return text;
+  return 'iOS security researcher';
 }
 
 /** 状态类标题的英文 */
@@ -115,3 +119,24 @@ export function roleTextEn(role: string): string {
   return ROLE_TEXT_EN[role] || role;
 }
 
+
+
+/** 中文模式：把英文基准标题还原成中文 */
+export function stateTitleZh(t: string): string {
+  return String(t || '').replace(/^Apple security update: /, 'Apple 安全更新公告：');
+}
+
+
+/** 中文模式：正文里的英文基准短语还原 */
+export function stateTextZh(t: string): string {
+  return String(t || '').replace(/^Apple security update: /, 'Apple 安全更新公告：');
+}
+
+
+/** 英文模式：固件/签名摘要的英文 */
+export function stateTextEn(t: string): string {
+  const s = String(t || '');
+  const m = s.match(/^最新固件 (.+?)；可刷版本：(.+?)；历史版本：(.+)$/);
+  if (m) return 'Latest firmware ' + m[1] + '; signed: ' + m[2].replace('无', 'none') + '; history: ' + m[3].replace(/\(签名\)/g, ' (signed)').replace('全部未签名', 'all unsigned');
+  return s;
+}

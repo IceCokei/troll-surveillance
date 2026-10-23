@@ -20,7 +20,7 @@ export async function collectAppleSecurity(): Promise<RawItem[]> {
       source: 'apple:security',
       author: 'Apple',
       title: title.slice(0, 200),
-      text: 'Apple 安全更新公告：' + title,
+      text: 'Apple security update: ' + title,
       url: href,
       publishedAt: new Date().toISOString(),
     });

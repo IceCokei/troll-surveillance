@@ -1,7 +1,7 @@
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/cn';
 import type { Item } from '@/lib/types';
-import { enNote, CAT_EN, agoEn, stateTitleEn } from '@/lib/en';
+import { enNote, CAT_EN, agoEn, stateTitleEn, stateTitleZh, stateTextZh, stateTextEn } from '@/lib/en';
 
 const CAT: Record<string, { label: string; variant: 'ok' | 'warn' | 'bad' | 'acc' | 'ghost' }> = {
   exploit: { label: '漏洞', variant: 'bad' },
@@ -27,7 +27,7 @@ export default function ItemCard({ it, compact = false, lang = 'zh' }: { it: Ite
   const catLabel = lang === 'en' ? CAT_EN[it.category] || 'news' : cat.label;
   const note = lang === 'en' ? enNote(it.actionNote) : it.actionNote;
   const time = lang === 'en' ? agoEn(it.publishedAt) : ago(it.publishedAt);
-  const title = lang === 'en' ? stateTitleEn(it.title) : it.title;
+  const title = lang === 'en' ? stateTitleEn(it.title) : stateTitleZh(it.title);
   return (
     <div
       className={cn(
@@ -69,7 +69,7 @@ export default function ItemCard({ it, compact = false, lang = 'zh' }: { it: Ite
         </p>
 
         {!compact && it.text && (
-          <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-neutral-500">{it.text}</p>
+          <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-neutral-500">{lang === 'en' ? stateTextEn(stateTextEn(it.text)) : stateTextZh(it.text)}</p>
         )}
 
         {it.tags.length > 0 && (
