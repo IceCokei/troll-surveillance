@@ -44,13 +44,7 @@ export default function Footer({ lang }: { lang: Lang }) {
         ))}
       </AnimationContainer>
 
-      <div className="mt-14 w-full select-none overflow-hidden">
-        <div className="text-center font-heading text-[18vw] font-bold leading-none tracking-tighter text-transparent bg-gradient-to-b from-neutral-800 to-neutral-950 bg-clip-text">
-          RADAR
-        </div>
-      </div>
-
-      <div className="mt-6 flex w-full flex-col items-center justify-between gap-2 border-t border-border pt-6 text-xs text-neutral-600 md:flex-row">
+      <div className="mt-12 flex w-full flex-col items-center justify-between gap-2 border-t border-border pt-6 text-xs text-neutral-600 md:flex-row">
         <span>{t(lang, 'footer.bottom1')}</span>
         <span>{t(lang, 'footer.bottom2')}</span>
       </div>
