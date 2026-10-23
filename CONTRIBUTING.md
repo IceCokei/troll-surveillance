@@ -24,7 +24,7 @@ scope: collect | analyze | devices | digest | ui | i18n | theme | release | docs
 - [ ] 新增页面在导航里有入口，并支持 `?lang=` / `?theme=`
 - [ ] 没有把 `data/*.json`、日志、设备标识提交上来
 - [ ] 截图用 `?redact=1` 生成（隐藏 UDID / 型号 / 区域）
-- [ ] README 里是真正的换行，不是字面 `\n`（CI 会拦）
+- [ ] README 里是真正的换行，不是字面的反斜杠转义（CI 会拦）
 
 ## 新增一个数据源
 
