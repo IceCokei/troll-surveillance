@@ -187,7 +187,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<Rec
             <p className="mt-3 max-w-2xl text-sm text-muted-foreground md:text-base">
               {actionable.length > 0
                 ? '以下条目同时满足：工具已公开、版本在支持区间、SoC 匹配。'
-                : '所有情报都只值记录。这不是系统没抓到，而是你的设备与版本上确实没有公开工具可用。'}
+                : t(lang, 'home.act.noneSub')}
             </p>
           </div>
         </AnimationContainer>

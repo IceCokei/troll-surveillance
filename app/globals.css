@@ -144,3 +144,12 @@
 .light header.top { background: rgba(255,255,255,0.75); }
 .light .shadow-\[0_24px_80px_-32px_rgba\(0\,0\,0\,0\.9\)\] { box-shadow: 0 24px 80px -32px rgba(0,0,0,0.25); }
 
+
+/* light: 让选中态芯片使用浅底色，避免深底黑字 */
+.light .bg-neutral-800 { background-color: rgba(0, 0, 0, 0.08); }
+.light .bg-slate-950 { background-color: #ffffff; }
+.light .text-violet-300 { color: #6d28d9; }
+.light .text-emerald-300, .light .text-emerald-400 { color: #047857; }
+.light .text-amber-300, .light .text-amber-400 { color: #b45309; }
+.light .text-rose-300 { color: #be123c; }
+.light .text-violet-200 { color: #5b21b6; }

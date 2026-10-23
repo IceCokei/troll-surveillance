@@ -39,6 +39,14 @@ Jailbreak news is noisy and almost always untethered from reality. A tool "suppo
 
 ![Devices](docs/screenshots/skin-devices.png)
 
+### Interface
+
+- **Bilingual** — EN / 中 switch in the navbar, persisted in a cookie, deep-linkable via `?lang=en`; resolved on the server so there is no flash
+- **Light + dark theme** — ☀ / ☾ toggle, `?theme=light` deep link, semantic tokens plus remapped neutrals
+- **Redact mode** — `?redact=1` masks UDID tail, model number and region so screenshots are safe to publish
+
+![Light theme](docs/screenshots/skin-light-en.png)
+
 ### Digest
 - Daily markdown archive (`data/digests/YYYY-MM-DD.md`) **rewritten on every sync**
 - Two renderings of the same document: a **macOS terminal view** (default) and a reading view
