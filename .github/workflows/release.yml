@@ -1,0 +1,75 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag to publish (e.g. v0.2.1)'
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: package and publish
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Resolve tag
+        id: meta
+        run: |
+          TAG="${{ github.event.inputs.tag || github.ref_name }}"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "version=${TAG#v}" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci --no-audit --no-fund
+      - run: npm run build
+
+      - name: Package source
+        run: |
+          V="${{ steps.meta.outputs.version }}"
+          mkdir -p dist
+          git archive --format=tar.gz --prefix="troll-surveillance-$V/" -o "dist/troll-surveillance-$V.tar.gz" HEAD
+          ( cd dist && shasum -a 256 "troll-surveillance-$V.tar.gz" > "troll-surveillance-$V.tar.gz.sha256" )
+          ls -lh dist
+
+      - name: Guard release notes
+        run: |
+          V="${{ steps.meta.outputs.version }}"
+          NOTES="docs/releases/v$V.md"
+          if [ -f "$NOTES" ]; then
+            if grep -qE '^(curl|tar|npm install|npm ci|\./install\.sh)' "$NOTES"; then
+              echo "::error::Release notes must not contain install commands (move them to README)"
+              exit 1
+            fi
+            echo "notes_file=$NOTES" >> "$GITHUB_ENV"
+          else
+            echo "::warning::No docs/releases/v$V.md found, falling back to auto-generated notes"
+            echo "notes_file=" >> "$GITHUB_ENV"
+          fi
+
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${{ steps.meta.outputs.tag }}"
+          V="${{ steps.meta.outputs.version }}"
+          ARGS=( "$TAG" "dist/troll-surveillance-$V.tar.gz" "dist/troll-surveillance-$V.tar.gz.sha256" --title "Troll Surveillance $TAG" )
+          if [ -n "${notes_file:-}" ]; then
+            ARGS+=( --notes-file "$notes_file" )
+          else
+            ARGS+=( --generate-notes )
+          fi
+          gh release create "${ARGS[@]}"
