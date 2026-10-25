@@ -1,4 +1,4 @@
-import { analyze } from './analyze';
+import { analyze, contentKey } from './analyze';
 import { collectAppleReleases, collectAppleSecurity } from './collect/apple';
 import { collectGithubCommits, collectGithubReleases } from './collect/github';
 import { collectGithubAtom } from './collect/ghatom';
@@ -8,6 +8,7 @@ import { fetchSigning } from './collect/ipsw';
 import { collectFeed } from './collect/rss';
 import { fetchWikiPage, wikiItem } from './collect/wiki';
 import { collectX } from './collect/x';
+import { isIosRelevant } from './xfilter';
 import { GITHUB_REPOS, RSS_FEEDS, WIKI_PAGES, X_HANDLES } from './knowledge';
 import { getItems, getMeta, getProfile, saveDigest, saveDigestEn, saveItems, saveMeta, today } from './store';
 import { buildDigest } from './digest';
@@ -20,6 +21,7 @@ export interface SyncResult {
   fetched: number;
   added: number;
   skipped: number;
+  dupContent: number;
   errors: { source: string; message: string }[];
   digestPath: string | null;
   actionable: number;
@@ -117,9 +119,13 @@ export async function runSync(opts: { force?: boolean } = {}): Promise<SyncResul
       continue;
     }
     try {
-      const items = await collectFeed(feed.url, feed.name);
+      const fetched = await collectFeed(feed.url, feed.name);
+      // 综合型 subreddit 里会混进水帖（情感八卦之类），套用与 X 相同的话题过滤
+      const items = feed.name.startsWith('r/')
+        ? fetched.filter((it) => isIosRelevant(it.title + ' ' + (it.text || '')))
+        : fetched;
       raw.push(...items);
-      mark('rss:' + feed.name, true, items.length);
+      mark('rss:' + feed.name, true, items.length, fetched.length !== items.length ? 'filtered ' + (fetched.length - items.length) : undefined);
     } catch (e: any) {
       const msg = String(e?.message || e);
       if (msg.includes('429') || msg.includes('403')) {
@@ -191,10 +197,25 @@ export async function runSync(opts: { force?: boolean } = {}): Promise<SyncResul
   // ---- 分析与入库
   const existing = getItems();
   const byId = new Map(existing.map((i) => [i.id, i] as const));
+  // 内容级去重：同一条内容换了个来源（同一推文、同一篇被两个 sub 转发）只留一条
+  const seenContent = new Set<string>();
+  for (const i of existing) {
+    const k = contentKey(i);
+    if (k) seenContent.add(k);
+  }
   const added: Item[] = [];
   const updated: Item[] = [];
+  let dupContent = 0;
   for (const r of raw) {
     const it = analyze(r, profile);
+    const ck = contentKey(it);
+    if (ck) {
+      if (seenContent.has(ck)) {
+        dupContent += 1;
+        continue;
+      }
+      seenContent.add(ck);
+    }
     const prev = byId.get(it.id);
     if (prev) {
       // 状态型条目（wiki / ipsw）或内容有变化时覆盖，保留首次入库时间用于当日分组
@@ -227,6 +248,7 @@ export async function runSync(opts: { force?: boolean } = {}): Promise<SyncResul
     fetched: raw.length,
     added: added.length,
     skipped: raw.length - added.length,
+    dupContent,
     errors,
     digestPath: 'data/digests/' + d + '.md',
     actionable: added.filter((i) => i.actionable).length,

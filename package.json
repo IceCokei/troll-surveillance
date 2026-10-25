@@ -9,7 +9,9 @@
     "sync": "tsx scripts/sync.ts",
     "sync:loop": "tsx scripts/sync.ts --loop 6",
     "watch": "tsx scripts/watch.ts",
-    "watch:once": "WATCH_MS=999999999 tsx scripts/watch.ts"
+    "watch:once": "WATCH_MS=999999999 tsx scripts/watch.ts",
+    "dedupe:items": "tsx scripts/dedupe-items.ts",
+    "rebuild:digests": "tsx scripts/rebuild-digests.ts"
   },
   "dependencies": {
     "class-variance-authority": "^0.7.1",

@@ -3,12 +3,51 @@ import type { Category, Item, Profile, RawItem, Tool } from './types';
 import { TOOLS, SOC_PATTERNS } from './knowledge';
 import { localDate } from './date';
 
+/**
+ * 从 URL 里取推文/状态的稳定 id —— 同一条贴文无论正文里带了多少个
+ * "17h"、"[ 2 52" 这类每轮都会变的计数，id 都不会变。
+ */
+export function statusKey(url?: string): string | null {
+  const m = String(url || '').match(/\/(?:status|statuses|p)\/(\d{6,})/);
+  return m ? 'status:' + m[1] : null;
+}
+
+/** 去掉每轮抓取都会变化的成分（相对时间、互动计数、残留标点），用于兜底身份键 */
+export function stableTitle(t: string): string {
+  return String(t || '')
+    .replace(/^[.\/·\-–—\s|]+/, '')
+    .replace(/(@[A-Za-z0-9_]{1,15})\s+\d{1,2}\s?[hmd]\b/gi, '$1 ')
+    .replace(/\[\s*\d[\d\s]{0,12}\]?\s*$/g, ' ')
+    // 只吃掉「句号/叹号/问号 + 空白 + 纯数字」这种尾部互动计数，
+    // 绝不能碰 "iPadOS 15.8.8" / "Dopamine 3.0.12" 这类版本号
+    .replace(/([。！？!?])\s+\d{1,3}(?:\s+\d{1,3})?\s*$/g, '$1')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+/**
+ * 内容级身份：用来兜住「同一段内容换了条来源」的重复。
+ * - X：同一作者 + 归一化正文（有没有 /status/ 链接都认得出是同一条）
+ * - RSS：标题够长就按标题认（同一篇被两个 sub 转发时合并）
+ * 仓库发版这类短标题不参与，避免不同项目的 "Release v1.2.0" 被误合。
+ */
+export function contentKey(raw: { source: string; author?: string; title: string }): string | null {
+  const text = stableTitle(raw.title || '').toLowerCase();
+  if (!text) return null;
+  if (raw.source.startsWith('x:')) return 'x|' + (raw.author || raw.source) + '|' + text.slice(0, 160);
+  if (raw.source.startsWith('rss:')) return text.length >= 40 ? 'rss|' + text.slice(0, 160) : null;
+  return null;
+}
+
 export function itemId(raw: RawItem): string {
   // 词条 / 签名状态是「状态型」条目：同一 source 只保留一条，同步时原地更新
   if (raw.kind === 'wiki' || raw.kind === 'ipsw') {
     return crypto.createHash('sha1').update('state|' + raw.source).digest('hex').slice(0, 16);
   }
-  const key = [raw.source, (raw.title || '').replace(/\s+/g, ' ').slice(0, 160)].join('|');
+  // 有状态 id 就用它：这是唯一不会随抓取漂移的身份
+  const st = statusKey(raw.url);
+  if (st) return crypto.createHash('sha1').update(raw.source + '|' + st).digest('hex').slice(0, 16);
+  const key = [raw.source, stableTitle(raw.title).slice(0, 160)].join('|');
   return crypto.createHash('sha1').update(key).digest('hex').slice(0, 16);
 }
 

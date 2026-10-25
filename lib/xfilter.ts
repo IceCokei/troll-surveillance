@@ -14,6 +14,19 @@ export function cleanXText(raw: string): string {
   t = t.replace(/^[\s\[\]()（）.,:：!！·—–-]+/, ' ');
   t = t.replace(/^\s*砍砍[!！]?\s*/g, ' ');
   t = t.replace(/^\s*[\w.\-]+@\s*/, ' ');
+  // 前导残留（markdown 列表符号、jina 的 ".ᐟ" 装饰、句柄前的点）
+  t = t.replace(/^[^\p{L}\p{N}@]+/u, ' ');
+  // jina 给作者名加的装饰符 ".ᐟ"（U+141F），不是正文
+  t = t.replace(/^[ᐟ\s]+/u, ' ');
+  // 开头的 "@handle 17h" —— 作者已经单独存了，正文不需要
+  t = t.replace(/^\s*@[A-Za-z0-9_]{1,15}\s*(?:\d{1,2}\s?[hmd]\b)?\s*/i, ' ');
+  t = t.replace(/^[.\/·\-–—\s|]+/, ' ');
+  // 句柄后的相对时间：".ᐟ @Lakr233 17h 用 @airbuild …"
+  t = t.replace(/(@[A-Za-z0-9_]{1,15})\s+\d{1,2}\s?[hmd]\b/gi, '$1 ');
+  // 尾部互动计数："[ 2 52" / "2 51" / " 2"
+  t = t.replace(/\[\s*\d[\d\s]{0,12}\]?\s*$/g, ' ');
+  // 同上：只有「句末标点 + 空白 + 纯数字」才算计数，版本号的尾数不动
+  t = t.replace(/([。！？!?])\s+\d{1,3}(?:\s+\d{1,3})?\s*$/g, '$1');
   // 折叠空白
   return t.replace(/\s+/g, ' ').trim();
 }
