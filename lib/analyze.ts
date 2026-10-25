@@ -201,7 +201,7 @@ export function analyze(raw: RawItem, profile: Profile): Item {
     score += 4;
     evidence.push('GitHub commit(+4)');
   }
-  if (raw.source === 'apple:releases') {
+  if (raw.source === 'apple:releases' || raw.source === 'apple:security') {
     // 官方平台推送：不进 exploit/signing 判定，单独一类
     if (category === 'news') category = 'os-release';
     score += 10;

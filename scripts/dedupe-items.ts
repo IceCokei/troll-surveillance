@@ -9,6 +9,7 @@
  */
 import { itemId, stableTitle, contentKey } from '../lib/analyze';
 import { cleanXText, isIosRelevant } from '../lib/xfilter';
+import { isUselessSystemUpdate } from '../lib/items';
 import { getItems, saveItems } from '../lib/store';
 import type { Item } from '../lib/types';
 
@@ -68,7 +69,15 @@ for (const it of byId.values()) {
   crossSource += 1;
 }
 
-// 第三轮（可选）：清掉综合型 subreddit 里混进来的水帖
+// 第三轮：比本机还旧的系统更新公告（Apple 安全公告 / 平台推送）没有任何决策价值
+let obsolete = 0;
+for (const [k, it] of [...byContent.entries()]) {
+  if (!isUselessSystemUpdate(it)) continue;
+  byContent.delete(k);
+  obsolete += 1;
+}
+
+// 第四轮（可选）：清掉综合型 subreddit 里混进来的水帖
 let purged = 0;
 if (process.argv.includes('--purge-offtopic')) {
   for (const [k, it] of [...byContent.entries()]) {
@@ -80,7 +89,7 @@ if (process.argv.includes('--purge-offtopic')) {
 }
 
 const merged = [...byContent.values()].sort((a, b) => (a.publishedAt < b.publishedAt ? 1 : -1));
-console.log('before', items.length, 'after', merged.length, 'merged', items.length - merged.length, '(cross-source', crossSource + ', purged', purged + ')');
+console.log('before', items.length, 'after', merged.length, 'merged', items.length - merged.length, '(cross-source', crossSource + ', obsolete', obsolete + ', purged', purged + ')');
 
 const sample = [...byId.values()].filter((i) => i.source === 'x:@Lakr233').slice(0, 4);
 for (const s of sample) console.log('  keep', s.id, '|', s.title.slice(0, 70));

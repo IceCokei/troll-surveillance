@@ -1,4 +1,5 @@
 import { analyze, contentKey } from './analyze';
+import { isUselessSystemUpdate } from './items';
 import { collectAppleReleases, collectAppleSecurity } from './collect/apple';
 import { collectGithubCommits, collectGithubReleases } from './collect/github';
 import { collectGithubAtom } from './collect/ghatom';
@@ -22,6 +23,7 @@ export interface SyncResult {
   added: number;
   skipped: number;
   dupContent: number;
+  obsoleteSystem: number;
   errors: { source: string; message: string }[];
   digestPath: string | null;
   actionable: number;
@@ -206,8 +208,14 @@ export async function runSync(opts: { force?: boolean } = {}): Promise<SyncResul
   const added: Item[] = [];
   const updated: Item[] = [];
   let dupContent = 0;
+  let obsoleteSystem = 0;
   for (const r of raw) {
     const it = analyze(r, profile);
+    // 比本机还旧的系统更新公告没有任何决策价值，不入库
+    if (isUselessSystemUpdate(it)) {
+      obsoleteSystem += 1;
+      continue;
+    }
     const ck = contentKey(it);
     if (ck) {
       if (seenContent.has(ck)) {
@@ -249,6 +257,7 @@ export async function runSync(opts: { force?: boolean } = {}): Promise<SyncResul
     added: added.length,
     skipped: raw.length - added.length,
     dupContent,
+    obsoleteSystem,
     errors,
     digestPath: 'data/digests/' + d + '.md',
     actionable: added.filter((i) => i.actionable).length,
